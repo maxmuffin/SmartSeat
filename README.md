@@ -1,1 +1,1 @@
-# SmartSeat
+# SmartSeaAI
