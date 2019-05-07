@@ -1,87 +1,56 @@
-//This is an example code for Bottom Navigation//
 import React from 'react';
 import { Button, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-//import all the basic component we have used
 import Ionicons from 'react-native-vector-icons/Ionicons';
-//import Ionicons to show the icon for bottom options
-//For React Navigation 2.+ import following
-//import {createStackNavigator,createBottomTabNavigator} from 'react-navigation';
-//For React Navigation 3.+ import following
-import {
-  createStackNavigator,
-  createBottomTabNavigator,
-  createAppContainer,
-} from 'react-navigation';
-//import createStackNavigator, createBottomTabNavigator, createAppContainer in our project
+import { createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import HomeScreen from './pages/HomeScreen';
 import SettingsScreen from './pages/SettingsScreen';
-import DetailsScreen from './pages/DetailsScreen';
-import ProfileScreen from './pages/ProfileScreen';
-const HomeStack = createStackNavigator(
-  {
-    //Defination of Navigaton from home screen
-    Home: { screen: HomeScreen },
-    Details: { screen: DetailsScreen },
-  },
-  {
-    //For React Navigation 2.+ change defaultNavigationOptions->navigationOptions
-    defaultNavigationOptions: {
-      //Header customization of the perticular Screen
-      headerStyle: {
-        backgroundColor: '#42f44b',
-      },
-      headerTintColor: '#FFFFFF',
-      title: 'Home',
-      //Header title
+import GraphScreen from './pages/GraphScreen';
+
+const App  = createMaterialBottomTabNavigator(
+    {
+        Home: { screen: HomeScreen,
+            navigationOptions:{
+                tabBarLabel:'Home',
+                tabBarIcon: ({ tintColor }) => (
+                    <View>
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-home'}/>
+                    </View>),
+            }
+        },
+        Graph: { screen: GraphScreen,
+            navigationOptions:{
+                tabBarLabel:'Graph',
+                tabBarIcon: ({ tintColor }) => (
+                    <View>
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-stats'}/>
+                    </View>),
+                activeColor: '#f60c0d',
+                inactiveColor: '#f65a22',
+                barStyle: { backgroundColor: '#f69b31' },
+            }
+        },
+        Settings: { screen: SettingsScreen,
+            navigationOptions:{
+                tabBarLabel:'Settings',
+                tabBarIcon: ({ tintColor }) => (
+                    <View>
+                        <Icon style={[{color: tintColor}]} size={25} name={'ios-cog'}/>
+                    </View>),
+                activeColor: '#615af6',
+                inactiveColor: '#46f6d7',
+                barStyle: { backgroundColor: '#67baf6' },
+            }
+        },
     },
-  }
-);
-const SettingsStack = createStackNavigator(
-  {
-    //Defination of Navigaton from setting screen
-    Settings: { screen: SettingsScreen },
-    Details: { screen: DetailsScreen },
-    Profile: { screen: ProfileScreen },
-  },
-  {
-    //For React Navigation 2.+ change defaultNavigationOptions->navigationOptions
-    defaultNavigationOptions: {
-      //Header customization of the perticular Screen
-      headerStyle: {
-        backgroundColor: '#42f44b',
-      },
-      headerTintColor: '#FFFFFF',
-      title: 'Settings',
-      //Header title
+    {
+      initialRouteName: "Home",
+      activeColor: '#f0edf6',
+      inactiveColor: '#226557',
+      barStyle: { backgroundColor: '#3BAD87' },
     },
-  }
 );
-const App = createBottomTabNavigator(
-  {
-    Home: { screen: HomeStack },
-    Settings: { screen: SettingsStack },
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        let IconComponent = Ionicons;
-        let iconName;
-        if (routeName === 'Home') {
-          iconName = `ios-information-circle${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Settings') {
-          iconName = `ios-checkmark-circle${focused ? '' : '-outline'}`;
-        }
-        return <IconComponent name={iconName} size={25} color={tintColor} />;
-      },
-    }),
-    tabBarOptions: {
-      activeTintColor: '#42f44b',
-      inactiveTintColor: 'gray',
-    },
-  }
-);
-//For React Navigation 2.+ need to export App only
-//export default App;
-//For React Navigation 3.+
+
 export default createAppContainer(App);
