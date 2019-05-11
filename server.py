@@ -1,6 +1,6 @@
-from flask import Flask, request, abort, jsonify, send_from_directory
+from flask import Flask, request, abort, jsonify, send_from_directory, session, render_template
 import pandas as pd
-import os
+import os, hashlib, json
 
 UPLOAD_DIRECTORY = "./data/uploaded_files"
 
@@ -55,6 +55,32 @@ def query_csv(filename):
     print(csv_val)
     json_val = csv_val.to_json()
     return jsonify(json_val)
+
+
+@api.route("/signup", methods=["POST"])
+def signup():
+    """Parsing JSON data with Username and Password"""
+    file_json = request.data
+    signup_data = json.loads(file_json)
+    username = signup_data['username']
+    password = signup_data['password']
+
+    """Adding Salt to password"""
+    salted_password = "salt45" + password + "56ty"
+
+    """Hashing MD5 password value"""
+    password_hashed = hashlib.md5(salted_password.encode())
+
+    print("user: " + username + "\npassword: " + password + "\nhashed: ")
+    print(password_hashed)
+    if True:
+        return "", 201
+
+
+@api.route("/login", methods=["POST"])
+def login():
+    if request.form['password'] == 'prova' and request.form['username'] == 'admin':
+        ciao = 1
 
 
 if __name__ == "__main__":
