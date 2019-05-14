@@ -19,7 +19,7 @@ HX711 scale;
 //-48100
 //-48080
 //-48054
-float calibration_factor = -48078; // this calibration factor is adjusted according to my load cell
+float calibration_factor = -7075; // this calibration factor is adjusted according to my load cell
 float units;
 float ounces;
 
@@ -45,7 +45,7 @@ void loop() {
   scale.set_scale(calibration_factor); //Adjust to this calibration factor
 
   Serial.print("Reading: ");
-  units = scale.get_units(), 10;
+  units = scale.get_units(), 0;
   if (units < 0)
   {
     units = 0.00;
@@ -62,8 +62,8 @@ void loop() {
   {
     char temp = Serial.read();
     if(temp == '+' || temp == 'a')
-      calibration_factor += 1;
+      calibration_factor += 100;
     else if(temp == '-' || temp == 'z')
-      calibration_factor -= 1;
+      calibration_factor -= 100;
   }
 }
