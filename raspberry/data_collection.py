@@ -3,6 +3,7 @@ import csv
 import datetime
 import uuid
 import time
+import os
 
 #serDevSeduta = serial.Serial('/dev/ttyACM0', 9600)
 #serDevSchienale = serial.Serial('/dev/ttyACM1', 9600)
@@ -20,7 +21,7 @@ unique_filename = str(postura)+"/"+str(uuid.uuid4())+".csv"
 with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
     filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3', 'postura'])
-    for i in range(0,5):
+    for i in range(0,20):
         # read five relevations from Arduino
         #serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
         #serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
@@ -41,7 +42,14 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         equalizedData.append(postura)
         filewriter.writerow(equalizedData)
         print("Write row")
-        time.sleep(5)
+        time.sleep(0.5)
+    correct = input("Correct measurement? [Y/n]: ")
+    if correct != "Y" :
+        os.remove("dataset/{}".format(unique_filename))
+        print("Measurement discarded")
+    else:
+        print("Measurement keeped")
+
 
 '''
 print ("Read input " + input.decode("utf-8") + " from Arduino")
