@@ -105,3 +105,7 @@ venv.bak/
 
 # Idea files
 .idea
+
+# Posenet Files
+posenet/.cache
+posenet/dist
