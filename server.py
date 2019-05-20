@@ -4,6 +4,7 @@ import os
 import sqlite3
 import pandas as pd
 from flask import Flask, request, abort, jsonify, send_from_directory
+from sklearn.externals import joblib
 
 UPLOAD_DIRECTORY = "./data/uploaded_files"
 
@@ -125,7 +126,7 @@ def login():
     username = signup_data['username']
     password = signup_data['password']
 
-    query_check_exists = "SELECT USERNAME,PASSWORD FROM USERS WHERE USERNAME='" + username + "'"
+    query_check_exists = "SELECT * FROM USERS WHERE USERNAME='" + username + "'"
     conn = sqlite3.connect("DB/SmartSeat.db")
     cursor = conn.cursor()
     cursor.execute(query_check_exists)
@@ -143,10 +144,29 @@ def login():
     print(user_info)
     if user_info[0] == username and user_info[1] == password:
         print("Logged True")
-        return '{"logged":"true"}', 201
+        return  \
+            '{' \
+            ' "logged":"true",' \
+            ' "username":"'+user_info[0]+'"' \
+            ' "name":"'+user_info[2]+'"' \
+            ' "surname":"'+user_info[3]+'"' \
+            ' "mail":"'+user_info[4]+'"' \
+            ' "weight":"'+user_info[5]+'"' \
+            ' "height":"'+user_info[6]+'"' \
+            ' "sex":"'+user_info[7]+'"' \
+            '}', 201
     else:
         print("Logged False")
         return '{"logged":"false"}', 201
+
+
+def query_posture(filename):
+    rfc = joblib.load('trained_model.skl')
+    with open('data/uploaded_files/'+filename) as csv:
+        content = csv.read()
+    csv_file_predict = pd.read_csv(content)
+    rfc_predict = rfc.predict(csv_file_predict)
+    return rfc_predict
 
 
 @api.route("/bind/<bind_id>")
@@ -160,4 +180,4 @@ def unbind(unbind_id):
 
 
 if __name__ == "__main__":
-    api.run(debug=True, host='0.0.0.0', port=8000)
+    api.run(debug=True, host='0.0.0.0', port=8000, threaded=True)
