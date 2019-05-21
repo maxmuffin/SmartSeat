@@ -5,22 +5,20 @@ import uuid
 import time
 import os
 
-#serDevSeduta = serial.Serial('/dev/ttyACM0', 9600)
-#serDevSchienale = serial.Serial('/dev/ttyACM1', 9600)
+peso = float(input("Inserisci peso (Kg): "))
+altezza = float(input("Inserisci altezza (cm): "))
+eta = int(input("Inserisci età: "))
+sesso = input("Inserisci sesso: ")
+postura = int(input("Inserisci la postura assunta (1-8): "))
 
-print("Inserisci peso:")
-peso = float(input())
-
-print("Inserisci la postura assunta (1-8): ")
-postura = int(input())
-
-print("Peso: " + str(peso) + " Postura: " + str(postura))
+print("\n\nPeso: " + str(peso) + "\tAltezza " + str(altezza) + "\tEtà: "+str(eta))
+print("Sesso: "+ sesso + "\tPostura: "+ str(postura) + "\n\n")
 
 unique_filename = str(postura)+"/"+str(uuid.uuid4())+".csv"
 
 with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
     filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3', 'postura'])
+    filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3', 'peso', 'altezza', 'eta', 'sesso','postura'])
     for i in range(0,20):
         # read five relevations from Arduino
         #serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
@@ -33,6 +31,7 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         receivedData = "1#2#3#4#5#6#7"
         data = receivedData.split("#")
 
+        '''  #This is for normalize data
         equalizedData = []
 
         for temp in data:
@@ -40,27 +39,22 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
             equalizedData.append(value/peso)
 
         equalizedData.append(postura)
-        filewriter.writerow(equalizedData)
+        '''
+        data.append(peso)
+        data.append(altezza)
+        data.append(eta)
+        data.append(sesso)
+        data.append(postura)
+
+        filewriter.writerow(data)
         print("Write row")
         time.sleep(0.5)
+
+    csvfile.close()
+
     correct = input("Correct measurement? [Y/n]: ")
-    if correct != "Y" :
+    if correct in ["Y","y"] :
+        print("Measurement keeped")
+    else:
         os.remove("dataset/{}".format(unique_filename))
         print("Measurement discarded")
-    else:
-        print("Measurement keeped")
-
-
-'''
-print ("Read input " + input.decode("utf-8") + " from Arduino")
-write something back
-ser.write(b'A')
-
-read response back from Arduino
-for i in range (0,3):
-        input = ser.read()
-
-        input_number = ord(input)
-
-        print ("Read input back: " + str(input_number))
-'''

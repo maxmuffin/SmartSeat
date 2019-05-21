@@ -32,7 +32,7 @@ void sendRawData() {
   scales.read(results);
   for (int i=0; i<scales.get_count(); ++i) {;
     Serial.print( -results[i]);
-    Serial.print( (i!=scales.get_count()-1)?",":"\n");
+    Serial.print( (i!=scales.get_count()-1)?"#":"\n");
   }
   delay(10);
 }
