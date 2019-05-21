@@ -8,7 +8,7 @@ print(response.json())
 
 with open('data/inputdata.csv') as fp:
     content = fp.read()
-response = requests.post('{}/query/inputdata.csv'.format(API_URL), data=content)
+response = requests.post('{}/query_model'.format(API_URL), data=content)
 print(response.json())
 
 

@@ -237,19 +237,17 @@ function detectPoseInRealTime(video, net) {
       }
     });
 
-
+    var range = 100;
     var xShoulder = rightShoulder.position.x;
     var xHip = rightHip.position.x;
     var yHip = rightHip.position.y;
     var yKnee = rightKnee.position.y;
 
-    if(xHip+10<=xShoulder<=xHip-10 &&
-      yKnee+10<=yHip<=yKnee-10 ){
+    if(xHip+(range/2) <= xShoulder <= xHip-(range/2) &&
+      yKnee+(range/2) <= yHip <= yKnee-(range/2)){
         document.body.style.backgroundColor = "Green"
-
     } else {
-        document.body.style.backgroundColor = "Green"
-
+        document.body.style.backgroundColor = "Red"
     }
 
     // End monitoring code for frames per second

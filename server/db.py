@@ -6,7 +6,7 @@ def create_connection():
     conn = sqlite3.connect("DB/SmartSeat.db")
     print(sqlite3.version)
     conn.execute(
-        "CREATE TABLE USERS IF NOT_EXIST (" +
+        "CREATE TABLE USERS (" +
         "   USERNAME\tTEXT\tPRIMARY KEY\tNOT NULL," +
         "   PASSWORD\t TEXT\tNOT NULL," +
         "   NAME\tTEXT\tNOT NULL," +
