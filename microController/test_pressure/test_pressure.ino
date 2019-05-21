@@ -6,8 +6,11 @@
  Arduino pin 6 -> HX711 CLK
  Arduino pin 5 -> HX711 DOUT
  Arduino pin 5V -> HX711 VCC
- Arduino pin GND -> HX711 GND 
+ Arduino pin GND -> HX711 GND
 */
+
+// USED FOR TEST SINGLE SENSOR
+
 #include <Fishino.h>
 #include <HX711.h>
 
@@ -52,7 +55,7 @@ void loop() {
   }
   ounces = units * 0.035274;
   Serial.print(units);
-  Serial.print(" kg"); 
+  Serial.print(" kg");
   Serial.print(" calibration_factor: ");
   Serial.print(calibration_factor);
   Serial.println();
