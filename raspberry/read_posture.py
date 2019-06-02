@@ -4,8 +4,6 @@ import datetime
 import uuid
 import time
 import os
-import pandas as pd
-import numpy as np
 
 # RICHIEDERE AL SERVER INFO DELL'UTENTE (peso, altezza , sesso)
 
@@ -14,6 +12,10 @@ peso = 50
 altezza = 153
 eta = 25
 sesso = "M"
+
+# For stabilize initial startup
+print("Waiting 5 seconds for stabilize sensors")
+time.sleep(5)
 
 while True:
     unique_filename = "realtimeView/"+str(uuid.uuid4())+"realtime_view.csv"
@@ -48,7 +50,7 @@ while True:
 
             time.sleep(0.4)
 
-        #meanData = np.mean(row_list, axis=0)
+
         meanData = [float(sum(l))/len(l) for l in zip(*row_list)]
 
         meanData.append(peso)
@@ -56,11 +58,8 @@ while True:
         meanData.append(eta)
         meanData.append(sesso)
 
-        print(meanData)
-        print("#############################")
-
         filewriter.writerow(meanData)
-        print("Success")
+        print("------------ SUCCESS ------------")
         csvfile.close()
 
         # SEND TO SERVER
