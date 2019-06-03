@@ -25,14 +25,17 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
     startTime = datetime.datetime.now()
     for i in range(0,20):
         # read five relevations from Arduino
-        #serDevSeduta = serial.Serial('/dev/ttyACM0', serial_speed)
-        #serDevSchienale = serial.Serial('/dev/ttyACM1', serial_speed)
+        serDevSeduta = serial.Serial('/dev/ttyACM0', serial_speed)
+        serDevSchienale = serial.Serial('/dev/ttyACM1', serial_speed)
 
-        #inputSeduta = serDevSeduta.readline()
-        #inputSchienale = serDevSchienale.readline()
+        inputSeduta = serDevSeduta.readline()
+        inputSchienale = serDevSchienale.readline()
 
-        #receivedData = inputSeduta + "#" + inputSchienale
-        receivedData = "1#2#3#4#5#6#7"
+        decodedSeduta = inputSeduta.decode("utf-8")
+        decodedSchienale = inputSchienale.decode("utf-8")
+
+        receivedData = decodedSeduta + "#" + decodedSchienale
+        #receivedData = "1#2#3#4#5#6#7"
         data = receivedData.split("#")
 
         #This is for normalize data
