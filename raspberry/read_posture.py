@@ -5,7 +5,7 @@ import uuid
 import time
 import os
 
-# RICHIEDERE AL SERVER INFO DELL'UTENTE (peso, altezza , sesso)
+# RICHIEDERE AL SERVER INFO DELL'UTENTE (peso, altezza , età, sesso)
 
 # Il dato dei singoli valori del csv è la media di 10 valori presi a distanza di 0.4s l'una
 peso = 50
@@ -30,14 +30,16 @@ while True:
 
         for i in range(0,10):
             # read five relevations from Arduino
-            #serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
-            #serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
+            serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
+            serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
 
-            #inputSeduta = serDevSeduta.readline()
-            #inputSchienale = serDevSchienale.readline()
+            inputSeduta = serDevSeduta.readline()
+            inputSchienale = serDevSchienale.readline()
 
-            #receivedData = inputSeduta + "#" + inputSchienale
-            receivedData = "1#2#3#4#5#6#7"
+            decodedSeduta = inputSeduta.decode("utf-8")
+            decodedSchienale = inputSchienale.decode("utf-8")
+
+            receivedData = decodedSeduta + "#" + decodedSchienale
             data = receivedData.split("#")
 
             equalizedData = []
