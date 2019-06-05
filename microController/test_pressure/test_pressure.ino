@@ -14,8 +14,8 @@
 #include <Fishino.h>
 #include <HX711.h>
 
-#define pinDOUT 1
-#define pinCLK 2
+#define pinDOUT 4
+#define pinCLK 5
 
 
 HX711 scale;

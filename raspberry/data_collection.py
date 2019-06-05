@@ -34,9 +34,9 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         decodedSeduta = inputSeduta.decode("utf-8")
         decodedSchienale = inputSchienale.decode("utf-8")
 
-        receivedData = decodedSeduta + "#" + decodedSchienale
+        receivedData = decodedSeduta + "\t" + decodedSchienale
         #receivedData = "1#2#3#4#5#6#7"
-        data = receivedData.split("#")
+        data = receivedData.split("\t")
 
         #This is for normalize data
         equalizedData = []

@@ -4,7 +4,7 @@
 #define DOUT1 1    // data pin to the 1 sensor
 #define DOUT2 2    // data pin to the 2 sensor
 #define DOUT3 3    // data pin to the 3 sensor
-#define DOUT4 4     // data pin to the 4 sensor
+#define DOUT4 4    // data pin to the 4 sensor
 #define CLK 5      // clock pin to the load cell amp
 #define TARE_TIMEOUT_SECONDS 4
 
@@ -33,7 +33,7 @@ void sendRawData() {
   scales.read(results);
   for (int i=0; i<scales.get_count(); ++i) {;
     Serial.print( -results[i]);
-    Serial.print( (i!=scales.get_count()-1)?"#":"\n");
+    Serial.print( (i!=scales.get_count()-1)?"\t":"\n");
   }
   delay(10);
 }

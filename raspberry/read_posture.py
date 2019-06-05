@@ -39,8 +39,8 @@ while True:
             decodedSeduta = inputSeduta.decode("utf-8")
             decodedSchienale = inputSchienale.decode("utf-8")
 
-            receivedData = decodedSeduta + "#" + decodedSchienale
-            data = receivedData.split("#")
+            receivedData = decodedSeduta + "\t" + decodedSchienale
+            data = receivedData.split("\t")
 
             equalizedData = []
             for temp in data:
