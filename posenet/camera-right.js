@@ -237,11 +237,11 @@ function detectPoseInRealTime(video, net) {
       }
     });
 
-    var range = 100;
-    var xShoulder = rightShoulder.position.x;
-    var xHip = rightHip.position.x;
-    var yHip = rightHip.position.y;
-    var yKnee = rightKnee.position.y;
+    let range = 50;
+    let xShoulder = rightShoulder.position.x;
+    let xHip = rightHip.position.x;
+    let yHip = rightHip.position.y;
+    let yKnee = rightKnee.position.y;
 
     if(xHip+(range/2) <= xShoulder <= xHip-(range/2) &&
       yKnee+(range/2) <= yHip <= yKnee-(range/2)){
