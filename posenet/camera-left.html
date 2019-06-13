@@ -45,13 +45,30 @@
         <canvas id="output" />
     </div>
     <div style="alignment: bottom">
-        <label id="Shoulder" ></label><br>
-        <label id="HipX"></label><br>
-        <label id="HipY"></label><br>
-        <label id="KneeX"></label><br>
-        <label id="KneeY"></label><br>
-        <label id="AnkleX"></label><br>
+        <table border="1" cellspacing="0" cellpadding= "20">
+            <tr>
+                <td>
+                    <label id="Shoulder" ></label><br>
+                    <label id="HipX"></label><br>
+                    <label id="HipY"></label><br>
+                    <label id="KneeX"></label><br>
+                    <label id="KneeY"></label><br>
+                    <label id="AnkleX"></label><br>
+                </td>
+                <td id="back">
+                      <label>Shoulder-Hip</label><br>
+                </td>
+                <td id="leg">
+                      <label>Hip-Knee</label><br>
+                </td>
+                <td id="feet">
+                      <label>Knee-Ankle</label><br>
+                </td>
+            </tr>
+        </table>
+
     </div>
+
     <script src="camera-left.js"></script>
 </body>
 

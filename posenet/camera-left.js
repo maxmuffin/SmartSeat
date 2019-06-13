@@ -264,15 +264,36 @@ function detectPoseInRealTime(video, net) {
     document.getElementById("AnkleX").textContent =
         "Ankle X: " + xAnkle;
 
-    if(xHip - (rangeBack/2) - 30 <= xShoulder &&
+    /*if(xHip - (rangeBack/2) - 30 <= xShoulder &&
         xShoulder <= xHip + (rangeBack/2) - 30 &&
         yKnee - (rangeLeg/2) <= yHip &&
         yHip <= yKnee + (rangeLeg/2) &&
         xKnee - (rangeFeet/2) <= xAnkle &&
         xAnkle <= xKnee + (rangeFeet/2)){
-        document.body.style.backgroundColor = "Green"
+      document.body.style.backgroundColor = "Green"
     } else {
         document.body.style.backgroundColor = "Red"
+    }*/
+
+    if (xHip - (rangeBack/2) - 30 <= xShoulder &&
+        xShoulder <= xHip + (rangeBack/2) - 30){
+        document.getElementById("back").style.backgroundColor = "Green"
+    }else{
+       document.getElementById("back").style.backgroundColor = "Red"
+    }
+
+    if (yKnee - (rangeLeg/2) <= yHip &&
+        yHip <= yKnee + (rangeLeg/2)){
+        document.getElementById("leg").style.backgroundColor = "Green"
+    }else{
+       document.getElementById("leg").style.backgroundColor = "Red"
+    }
+
+    if (xKnee - (rangeFeet/2) <= xAnkle &&
+        xAnkle <= xKnee + (rangeFeet/2)){
+        document.getElementById("feet").style.backgroundColor = "Green"
+    }else{
+       document.getElementById("feet").style.backgroundColor = "Red"
     }
 
     // End monitoring code for frames per second
