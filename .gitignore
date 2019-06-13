@@ -109,3 +109,4 @@ venv.bak/
 # Posenet Files
 posenet/.cache
 posenet/dist
+posenet/node_modules

@@ -252,17 +252,17 @@ function detectPoseInRealTime(video, net) {
     let xAnkle = leftAnkle.position.x;
 
     document.getElementById("Shoulder").textContent =
-        "Shoulder: " + xShoulder;
+        "Shoulder: " + ~~xShoulder;
     document.getElementById("HipX").textContent =
-        "Hip X: " + xHip;
+        "Hip X: " + ~~xHip;
     document.getElementById("HipY").textContent =
-        "Hip Y: " + yHip;
+        "Hip Y: " + ~~yHip;
     document.getElementById("KneeX").textContent =
-        "Knee X: " + xKnee;
+        "Knee X: " + ~~xKnee;
     document.getElementById("KneeY").textContent =
-        "Knee Y: " + yKnee;
+        "Knee Y: " + ~~yKnee;
     document.getElementById("AnkleX").textContent =
-        "Ankle X: " + xAnkle;
+        "Ankle X: " + ~~xAnkle;
 
     /*if(xHip - (rangeBack/2) - 30 <= xShoulder &&
         xShoulder <= xHip + (rangeBack/2) - 30 &&

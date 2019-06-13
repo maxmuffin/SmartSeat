@@ -246,13 +246,13 @@ function detectPoseInRealTime(video, net) {
     let yRightKnee = rightKnee.position.y;
     let yLeftKnee = leftKnee.position.y;
     document.getElementById("rightS").textContent =
-        "Right Shoulder: " + yRightShoulder;
+        "Right Shoulder: " + ~~yRightShoulder;
     document.getElementById("leftS").textContent =
-      "Left Shoulder: " + yLeftShoulder;
+      "Left Shoulder: " + ~~yLeftShoulder;
     document.getElementById("rightK").textContent =
-        "Right Knee: " + yRightKnee;
+        "Right Knee: " + ~~yRightKnee;
     document.getElementById("leftK").textContent =
-        "Left Knee: " + yLeftKnee;
+        "Left Knee: " + ~~yLeftKnee;
 
     /*if(yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
         yRightShoulder <= yLeftShoulder+(rangeShoulder/2) &&
