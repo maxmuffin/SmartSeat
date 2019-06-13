@@ -216,9 +216,10 @@ function detectPoseInRealTime(video, net) {
     // For each pose (i.e. person) detected in an image, loop through the poses
     // and draw the resulting skeleton and keypoints if over certain confidence
     // scores
-    var rightShoulder;
-    var rightHip;
-    var rightKnee;
+    var leftShoulder;
+    var leftHip;
+    var leftKnee;
+    var leftAnkle;
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
         if (guiState.output.showPoints) {
@@ -231,20 +232,44 @@ function detectPoseInRealTime(video, net) {
           drawBoundingBox(keypoints, ctx);
         }
 
-        rightShoulder = keypoints[6];
-        rightHip = keypoints[12];
-        rightKnee = keypoints[14];
+        leftShoulder = keypoints[5];
+        leftHip = keypoints[11];
+        leftKnee = keypoints[13];
+        leftAnkle = keypoints[15];
+
       }
     });
 
-    let range = 50;
-    let xShoulder = rightShoulder.position.x;
-    let xHip = rightHip.position.x;
-    let yHip = rightHip.position.y;
-    let yKnee = rightKnee.position.y;
+    let rangeBack = 20;
+    let rangeLeg = 50;
+    let rangeFeet = 20;
 
-    if(xHip+(range/2) <= xShoulder <= xHip-(range/2) &&
-      yKnee+(range/2) <= yHip <= yKnee-(range/2)){
+    let xShoulder = leftShoulder.position.x;
+    let xHip = leftHip.position.x;
+    let yHip = leftHip.position.y;
+    let yKnee = leftKnee.position.y;
+    let xKnee = leftKnee.position.x;
+    let xAnkle = leftAnkle.position.x;
+
+    document.getElementById("Shoulder").textContent =
+        "Shoulder: " + xShoulder;
+    document.getElementById("HipX").textContent =
+        "Hip X: " + xHip;
+    document.getElementById("HipY").textContent =
+        "Hip Y: " + yHip;
+    document.getElementById("KneeX").textContent =
+        "Knee X: " + xKnee;
+    document.getElementById("KneeY").textContent =
+        "Knee Y: " + yKnee;
+    document.getElementById("AnkleX").textContent =
+        "Ankle X: " + xAnkle;
+
+    if(xHip - (rangeBack/2) - 30 <= xShoulder &&
+        xShoulder <= xHip + (rangeBack/2) - 30 &&
+        yKnee - (rangeLeg/2) <= yHip &&
+        yHip <= yKnee + (rangeLeg/2) &&
+        xKnee - (rangeFeet/2) <= xAnkle &&
+        xAnkle <= xKnee + (rangeFeet/2)){
         document.body.style.backgroundColor = "Green"
     } else {
         document.body.style.backgroundColor = "Red"

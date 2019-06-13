@@ -232,21 +232,32 @@ function detectPoseInRealTime(video, net) {
           drawBoundingBox(keypoints, ctx);
         }
 
-        rightShoulder = keypoints[6];
-        leftShoulder = keypoints[7];
-        rightKnee = keypoints[14];
-        leftKnee = keypoints[15]
+        rightShoulder = keypoints[5];
+        leftShoulder = keypoints[6];
+        rightKnee = keypoints[13];
+        leftKnee = keypoints[14]
       }
     });
 
-    let range = 50;
+    let rangeShoulder = 16;
+    let rangeKnee = 20;
     let yRightShoulder = rightShoulder.position.y;
     let yLeftShoulder = leftShoulder.position.y;
     let yRightKnee = rightKnee.position.y;
     let yLeftKnee = leftKnee.position.y;
+    document.getElementById("rightS").textContent =
+        "Right Shoulder: " + yRightShoulder;
+    document.getElementById("leftS").textContent =
+      "Left Shoulder: " + yLeftShoulder;
+    document.getElementById("rightK").textContent =
+        "Right Knee: " + yRightKnee;
+    document.getElementById("leftK").textContent =
+        "Left Knee: " + yLeftKnee;
 
-    if(yLeftShoulder+(range/2) <= yRightShoulder <= yLeftShoulder-(range/2) &&
-      yLeftKnee+(range/2) <= yRightKnee <= yLeftKnee-(range/2)){
+    if(yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
+        yRightShoulder <= yLeftShoulder+(rangeShoulder/2) &&
+        yLeftKnee-(rangeKnee/2) <= yRightKnee &&
+        yRightKnee <= yLeftKnee+(rangeKnee/2)){
         document.body.style.backgroundColor = "Green"
     } else {
         document.body.style.backgroundColor = "Red"
