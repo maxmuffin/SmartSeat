@@ -254,13 +254,27 @@ function detectPoseInRealTime(video, net) {
     document.getElementById("leftK").textContent =
         "Left Knee: " + yLeftKnee;
 
-    if(yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
+    /*if(yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
         yRightShoulder <= yLeftShoulder+(rangeShoulder/2) &&
         yLeftKnee-(rangeKnee/2) <= yRightKnee &&
         yRightKnee <= yLeftKnee+(rangeKnee/2)){
         document.body.style.backgroundColor = "Green"
     } else {
         document.body.style.backgroundColor = "Red"
+    }*/
+
+    if (yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
+        yRightShoulder <= yLeftShoulder+(rangeShoulder/2)){
+        document.getElementById("shoulder").style.backgroundColor = "Green"
+    }else{
+       document.getElementById("shoulder").style.backgroundColor = "Red"
+    }
+
+    if (yLeftKnee-(rangeKnee/2) <= yRightKnee &&
+        yRightKnee <= yLeftKnee+(rangeKnee/2)){
+        document.getElementById("knee").style.backgroundColor = "Green"
+    }else{
+       document.getElementById("knee").style.backgroundColor = "Red"
     }
 
     // End monitoring code for frames per second
