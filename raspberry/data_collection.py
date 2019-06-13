@@ -23,20 +23,20 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
     filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3', 'peso', 'altezza', 'eta', 'sesso','postura', 'timestamp'])
     startTime = datetime.datetime.now()
-    for i in range(0,18):
+    for i in range(0,20):
         # read five relevations from Arduino
         serDevSeduta = serial.Serial('/dev/ttyACM0', serial_speed)
-        #serDevSchienale = serial.Serial('/dev/ttyACM1', serial_speed)
+        serDevSchienale = serial.Serial('/dev/ttyACM1', serial_speed)
 
         inputSeduta = serDevSeduta.readline()
-        #inputSchienale = serDevSchienale.readline()
+        inputSchienale = serDevSchienale.readline()
 
         decodedSeduta = inputSeduta.decode("utf-8")
-        #decodedSchienale = inputSchienale.decode("utf-8")
+        decodedSchienale = inputSchienale.decode("utf-8")
 
-        #receivedData = decodedSeduta + "\t" + decodedSchienale
-        receivedData = decodedSeduta + "\t7\t8\t9"
-        #receivedData = "1#2#3#4#5#6#7"
+        receivedData = decodedSeduta + "\t" + decodedSchienale
+        #receivedData = decodedSeduta + "\t7\t8\t9"
+        #receivedData = "1\t2\t3\t4\t5\t6\t7"
         data = receivedData.split("\t")
 
         #This is for normalize data

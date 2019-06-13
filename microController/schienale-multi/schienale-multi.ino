@@ -2,8 +2,8 @@
 
 // Pins to the load cell amp
 #define DOUT1 1    // data pin to the 1 sensor
-#define DOUT2 2    // data pin to the 2 sensor
-#define DOUT3 3    // data pin to the 3 sensor
+#define DOUT2 3    // data pin to the 2 sensor
+#define DOUT3 4    // data pin to the 3 sensor
 #define CLK 5      // clock pin to the load cell amp
 #define TARE_TIMEOUT_SECONDS 4
 
