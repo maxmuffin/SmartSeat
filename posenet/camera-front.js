@@ -89,7 +89,7 @@ function saveButton() {
         document.getElementById("button").textContent = "STOP";
         save = true;
     } else {
-        let filename = uuidv4() + '.txt';
+        let filename = 'FRONT-' + uuidv4() + '.txt';
         console.log(filename);
         download(savedData, filename, 'text/plain');
         savedData = "yRightShoulder,yLeftShoulder,xRightKnee,yRightKnee,yLeftKnee,xLeftKnee,xLeftAnkle,yLeftAnkle,xRightAnkle,yRightAnkle\n";

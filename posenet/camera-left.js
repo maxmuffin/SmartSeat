@@ -91,7 +91,7 @@ function saveButton() {
         document.getElementById("button").textContent = "STOP";
         save = true;
     } else {
-        let filename = uuidv4() + '.txt';
+        let filename = 'LEFT-' + uuidv4() + '.txt';
         console.log(filename);
         download(savedData, filename, 'text/plain');
         savedData = "xShoulder,xHip,yHip,yKnee,xKnee,xAnkle,Correct,Timestamp";
