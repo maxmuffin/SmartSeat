@@ -33,8 +33,11 @@ def collectData():
 
             for i in range(0,20):
                 # read five relevations from Arduino
-                serDevSeduta = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
-                serDevSchienale = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
+                #serDevSeduta = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
+                #serDevSchienale = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
+
+                serDevSeduta = serial.Serial('/dev/ttyACM1', serial_speed)
+                serDevSchienale = serial.Serial('/dev/ttyACM0', serial_speed)
 
                 inputSeduta = serDevSeduta.readline()
                 inputSchienale = serDevSchienale.readline()
