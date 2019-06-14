@@ -18,6 +18,7 @@ import * as posenet from '@tensorflow-models/posenet';
 import dat from 'dat.gui';
 import Stats from 'stats.js';
 
+
 import {drawBoundingBox, drawKeypoints, drawSkeleton} from './demo_util';
 
 const videoWidth = 600;
@@ -220,6 +221,8 @@ function detectPoseInRealTime(video, net) {
     var leftShoulder;
     var rightKnee;
     var leftKnee;
+    var leftAnkle;
+    var rightAnkle;
     poses.forEach(({score, keypoints}) => {
       if (score >= minPoseConfidence) {
         if (guiState.output.showPoints) {
@@ -234,48 +237,85 @@ function detectPoseInRealTime(video, net) {
 
         rightShoulder = keypoints[5];
         leftShoulder = keypoints[6];
-        rightKnee = keypoints[13];
-        leftKnee = keypoints[14]
+        leftKnee = keypoints[13];
+        rightKnee = keypoints[14];
+        leftAnkle = keypoints[15];
+        rightAnkle = keypoints[16]
       }
     });
+  if (rightShoulder!=null) {
 
-    let rangeShoulder = 16;
-    let rangeKnee = 20;
-    let yRightShoulder = rightShoulder.position.y;
-    let yLeftShoulder = leftShoulder.position.y;
-    let yRightKnee = rightKnee.position.y;
-    let yLeftKnee = leftKnee.position.y;
-    document.getElementById("rightS").textContent =
-        "Right Shoulder: " + ~~yRightShoulder;
-    document.getElementById("leftS").textContent =
-      "Left Shoulder: " + ~~yLeftShoulder;
-    document.getElementById("rightK").textContent =
-        "Right Knee: " + ~~yRightKnee;
-    document.getElementById("leftK").textContent =
-        "Left Knee: " + ~~yLeftKnee;
+      let rangeShoulder = 16;
+      let rangeKnee = 20;
+      let rangeFeet = 20;
+      let yRightShoulder = rightShoulder.position.y;
+      let yLeftShoulder = leftShoulder.position.y;
+      let xRightKnee = rightKnee.position.x;
+      let yRightKnee = rightKnee.position.y;
+      let yLeftKnee = leftKnee.position.y;
+      let xLeftKnee = leftKnee.position.x;
+      let xLeftAnkle = leftAnkle.position.x;
+      let yLeftAnkle = leftAnkle.position.y;
+      let xRightAnkle = rightAnkle.position.x;
+      let yRightAnkle = rightAnkle.position.y;
 
-    /*if(yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
-        yRightShoulder <= yLeftShoulder+(rangeShoulder/2) &&
-        yLeftKnee-(rangeKnee/2) <= yRightKnee &&
-        yRightKnee <= yLeftKnee+(rangeKnee/2)){
-        document.body.style.backgroundColor = "Green"
-    } else {
-        document.body.style.backgroundColor = "Red"
-    }*/
+      document.getElementById("rightS").textContent =
+          "Right Shoulder: " + ~~yRightShoulder;
+      document.getElementById("leftS").textContent =
+          "Left Shoulder: " + ~~yLeftShoulder;
+      document.getElementById("rightK").textContent =
+          "Right Knee: " + ~~yRightKnee;
+      document.getElementById("leftK").textContent =
+          "Left Knee: " + ~~yLeftKnee;
+      document.getElementById("leftAx").textContent =
+          "Left Ankle X: " + ~~xLeftAnkle;
+      document.getElementById("leftAy").textContent =
+          "Left Ankle Y: " + ~~yLeftAnkle;
+      document.getElementById("rightAx").textContent =
+          "Right Ankle X: " + ~~xRightAnkle;
+      document.getElementById("rightAy").textContent =
+          "Right Ankle Y: " + ~~yRightAnkle;
 
-    if (yLeftShoulder-(rangeShoulder/2) <= yRightShoulder &&
-        yRightShoulder <= yLeftShoulder+(rangeShoulder/2)){
+      //ALLINEAMENTO SPALLE
+      if (yLeftShoulder - (rangeShoulder / 2) <= yRightShoulder &&
+          yRightShoulder <= yLeftShoulder + (rangeShoulder / 2)) {
         document.getElementById("shoulder").style.backgroundColor = "Green"
-    }else{
-       document.getElementById("shoulder").style.backgroundColor = "Red"
-    }
+      } else {
+        document.getElementById("shoulder").style.backgroundColor = "Red"
+      }
 
-    if (yLeftKnee-(rangeKnee/2) <= yRightKnee &&
-        yRightKnee <= yLeftKnee+(rangeKnee/2)){
+      //ALLINEAMENTO GINOCCHIA
+      if (yLeftKnee - (rangeKnee / 2) <= yRightKnee &&
+          yRightKnee <= yLeftKnee + (rangeKnee / 2)) {
         document.getElementById("knee").style.backgroundColor = "Green"
-    }else{
-       document.getElementById("knee").style.backgroundColor = "Red"
-    }
+      } else {
+        document.getElementById("knee").style.backgroundColor = "Red"
+      }
+
+      //ALLINEAMENTO PIEDE-GINOCCHIA SINISTRA
+      if (xLeftAnkle - (rangeFeet / 2) <= xLeftKnee &&
+          xLeftKnee <= xLeftAnkle + (rangeFeet / 2)) {
+        document.getElementById("feetKneeL").style.backgroundColor = "Green"
+      } else {
+        document.getElementById("feetKneeL").style.backgroundColor = "Red"
+      }
+
+      //ALLINEAMENTO PIEDE-GINOCCHIA DESTRA
+      if (xRightAnkle - (rangeFeet / 2) <= xRightKnee &&
+          xRightKnee <= xRightAnkle + (rangeFeet / 2)) {
+        document.getElementById("feetKneeR").style.backgroundColor = "Green"
+      } else {
+        document.getElementById("feetKneeR").style.backgroundColor = "Red"
+      }
+
+      //ALLINEAMENTO PIEDI A TERRA
+      if (yRightAnkle - (rangeFeet / 2) <= yLeftAnkle &&
+          yLeftAnkle <= yRightAnkle + (rangeFeet / 2)) {
+        document.getElementById("feetGround").style.backgroundColor = "Green"
+      } else {
+        document.getElementById("feetGround").style.backgroundColor = "Red"
+      }
+  }
 
     // End monitoring code for frames per second
     stats.end();
@@ -318,3 +358,9 @@ navigator.getUserMedia = navigator.getUserMedia ||
     navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 // kick off the demo
 bindPage();
+
+$("button").on("click",function(){clickMe()});
+
+function clickMe() {
+  console.log("MERDA DIO PORCO");
+}
