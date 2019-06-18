@@ -94,7 +94,7 @@ function saveButton() {
         let filename = 'LEFT-' + uuidv4() + '.txt';
         console.log(filename);
         download(savedData, filename, 'text/plain');
-        savedData = "xShoulder,xHip,yHip,yKnee,xKnee,xAnkle,Correct,Timestamp";
+        savedData = "xShoulder,xHip,yHip,yKnee,xKnee,xAnkle,Correct,Timestamp\n";
         document.getElementById("button").textContent = "START";
         save = false;
     }
