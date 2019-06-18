@@ -92,7 +92,7 @@ function saveButton() {
         let filename = 'FRONT-' + uuidv4() + '.txt';
         console.log(filename);
         download(savedData, filename, 'text/plain');
-        savedData = "yRightShoulder,yLeftShoulder,xRightKnee,yRightKnee,yLeftKnee,xLeftKnee,xLeftAnkle,yLeftAnkle,xRightAnkle,yRightAnkle\n";
+        savedData = "yRightShoulder,yLeftShoulder,xRightKnee,yRightKnee,yLeftKnee,xLeftKnee,xLeftAnkle,yLeftAnkle,xRightAnkle,yRightAnkle,Correct,Timestamp\n";
         document.getElementById("button").textContent = "START";
         save = false;
     }
@@ -357,7 +357,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("shoulder").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0-";
+                    savedData += "1-";
                 }
             }
 
@@ -371,7 +371,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("knee").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0-";
+                    savedData += "1-";
                 }
             }
 
@@ -385,7 +385,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("feetKneeL").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0-";
+                    savedData += "1-";
                 }
             }
 
@@ -399,7 +399,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("feetKneeR").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0-";
+                    savedData += "1-";
                 }
             }
 
@@ -413,7 +413,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("feetGround").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0,";
+                    savedData += "1,";
                 }
             }
 

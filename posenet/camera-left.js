@@ -309,8 +309,8 @@ function detectPoseInRealTime(video, net) {
         });
 
         if (leftShoulder != null) {
-            let rangeBack = 20;
-            let rangeLeg = 50;
+            let rangeBack = 30;
+            let rangeLeg = 70;
             let rangeFeet = 20;
 
             let xShoulder = leftShoulder.position.x;
@@ -345,7 +345,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("back").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0-";
+                    savedData += "1-";
                 }
             }
 
@@ -358,7 +358,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("leg").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0-";
+                    savedData += "1-";
                 }
             }
 
@@ -371,7 +371,7 @@ function detectPoseInRealTime(video, net) {
             } else {
                 document.getElementById("feet").style.backgroundColor = "Red";
                 if (save === true) {
-                    savedData += "0,";
+                    savedData += "1,";
                 }
             }
 
