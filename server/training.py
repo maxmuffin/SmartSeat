@@ -15,7 +15,7 @@ columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schien
                'peso', 'altezza', 'eta', 'sesso', 'postura', 'timestamp']
 
 # open csv file
-csvFile = pd.read_csv('./data/outputPostureallMerged.csv', names=columnsName)
+csvFile = pd.read_csv('/home/matteo/Developments/git/SmartSeatArduino/raspberry/dataset/merged/allMerged/outputPostureallMerged.csv', names=columnsName)
 print(csvFile.shape)
 
 # print head of dataset

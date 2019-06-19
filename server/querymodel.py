@@ -3,22 +3,17 @@ import pandas as pd
 
 
 rfc = joblib.load('trained_model.skl')
-columnsName = ['pelvic_incidence',
-               'pelvic_tilt numeric',
-               'lumbar_lordosis_angle',
-               'sacral_slope',
-               'pelvic_radius',
-               'degree_spondylolisthesis']
+columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3']
 
-csv_file_predict = pd.read_csv("./data/column_test.csv", names=columnsName)
-print(csv_file_predict.shape)
-print(csv_file_predict.head())
+csv_file_predict = pd.read_csv("/home/matteo/Developments/git/SmartSeatArduino/raspberry/dataset/realtimeView/false/sanfo/fe7998f1-696b-4e03-bb0d-13b9f274240crealtime_view.csv", names=columnsName)
+#print(csv_file_predict.shape)
+#print(csv_file_predict.head())
 
 x_test = csv_file_predict
 
 
 rfc_predict = rfc.predict(x_test)
-print(rfc_predict)
+print("Predict ", rfc_predict)
 
 # print("=== Confusion Matrix ===")
 # print(confusion_matrix(y_test, rfc_predict))
