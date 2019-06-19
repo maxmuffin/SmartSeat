@@ -13,6 +13,8 @@ altezza = 153
 eta = 25
 sesso = "M"
 
+serial_speed = 115200
+
 # For stabilize initial startup
 print("Waiting 5 seconds for stabilize sensors")
 time.sleep(5)
@@ -22,7 +24,7 @@ while True:
 
     with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3', 'peso', 'altezza', 'eta', 'sesso'])
+        filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3'])
 
         #This is for normalize data
         row_list = []
@@ -30,8 +32,11 @@ while True:
 
         for i in range(0,10):
             # read five relevations from Arduino
-            serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
-            serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
+            #serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
+            #serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
+
+            serDevSeduta = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
+            serDevSchienale = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
 
             inputSeduta = serDevSeduta.readline()
             inputSchienale = serDevSchienale.readline()
@@ -48,24 +53,25 @@ while True:
                 equalizedData.append(value)
 
             print("Take relevation")
-            row_list.append(equalizedData)
+            filewriter.writerow(equalizedData)
+            #row_list.append(equalizedData)
 
             time.sleep(0.4)
 
 
-        meanData = [float(sum(l))/len(l) for l in zip(*row_list)]
+        #meanData = [float(sum(l))/len(l) for l in zip(*row_list)]
 
-        meanData.append(peso)
-        meanData.append(altezza)
-        meanData.append(eta)
-        meanData.append(sesso)
+        #meanData.append(peso)
+        #meanData.append(altezza)
+        #meanData.append(eta)
+        #meanData.append(sesso)
 
-        filewriter.writerow(meanData)
+        #filewriter.writerow(equalizedData)
         print("------------ SUCCESS ------------")
         csvfile.close()
 
         # SEND TO SERVER
         delete_filename = unique_filename
-        os.remove("dataset/{}".format(delete_filename))
+        #os.remove("dataset/{}".format(delete_filename))
 
         # time.sleep(4)
