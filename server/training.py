@@ -11,24 +11,19 @@ from sklearn.metrics import classification_report, confusion_matrix
 import joblib
 
 # list for column headers
-columnsName = ['pelvic_incidence',
-               'pelvic_tilt numeric',
-               'lumbar_lordosis_angle',
-               'sacral_slope',
-               'pelvic_radius',
-               'degree_spondylolisthesis',
-               'class']
+columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3',
+               'peso', 'altezza', 'eta', 'sesso', 'postura', 'timestamp']
 
 # open csv file
-csvFile = pd.read_csv('./data/column_3C_weka.csv', names=columnsName)
+csvFile = pd.read_csv('./data/outputPostureallMerged.csv', names=columnsName)
 print(csvFile.shape)
 
 # print head of dataset
 print(csvFile.head())
 
 # split data and posture identifier
-X = csvFile.drop('class', axis=1)
-y = csvFile['class']
+X = csvFile.drop(['peso', 'altezza', 'eta', 'sesso', 'postura', 'timestamp'], axis=1)
+y = csvFile['postura']
 
 
 # implementing train and test data split
