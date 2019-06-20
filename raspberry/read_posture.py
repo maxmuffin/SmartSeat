@@ -5,6 +5,7 @@ import uuid
 import time
 import os
 import requests
+import math
 
 # RICHIEDERE AL SERVER INFO DELL'UTENTE (peso, altezza , età, sesso)
 
@@ -24,8 +25,13 @@ def sendCSV(filePath):
 
     with open("dataset/{}".format(filePath)) as fp:
         content = fp.read()
-    response = requests.post('{}/query_model'.format(API_URL), data=content)
-    print(response.json())
+    try:
+        response = requests.post('{}/query_model'.format(API_URL), data=content)
+        print(response.json())
+
+    except (ConnectionError, ConnectionRefusedError) as e:
+        print("Server not reachable")
+        pass
 
     if response:
         sendOK = "OK"
@@ -40,14 +46,14 @@ while True:
 
     unique_filename = "realtimeView/"+str(uuid.uuid4())+"realtime_view.csv"
     sendOk = ""
+    saveRow = True
 
     with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         #filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3'])
 
         #This is for normalize data
-        row_list = []
-
+        #row_list = []
 
         for i in range(0,10):
             # read five relevations from Arduino
@@ -66,6 +72,9 @@ while True:
             decodedSeduta = inputSeduta.decode("utf-8")
             decodedSchienale = inputSchienale.decode("utf-8")
 
+            #print("Seduta:     "+ decodedSeduta)
+            #print("Schienale:  "+ decodedSchienale)
+
             receivedData = decodedSeduta + "\t" + decodedSchienale
 
             #receivedData = "1\t2\t3\t4\t5\t6\t7"
@@ -73,14 +82,25 @@ while True:
 
             equalizedData = []
             for temp in data:
-                value = float(temp)
-                equalizedData.append(value)
+                #if contains whitespaces and numbers
+                try:
+                    value = float(temp)
+                    if math.isnan(value):
+                        saveRow = False
+                        print("####### lettura scartata ###########")
+                    else:
+                        saveRow = True
+                        equalizedData.append(value)
+                except ValueError:
+                    print("Value error")
 
-            print("Take relevation")
-            filewriter.writerow(equalizedData)
+
+            #print("Take relevation")
+            if saveRow:
+                filewriter.writerow(equalizedData)
             #row_list.append(equalizedData)
 
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         '''
         meanData = [float(sum(l))/len(l) for l in zip(*row_list)]

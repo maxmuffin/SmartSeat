@@ -14,6 +14,7 @@ altezza = 0
 eta = 0
 sesso = "NONE"
 postura = 0
+saveRow = True
 
 
 def collectData():
@@ -36,8 +37,8 @@ def collectData():
                 #serDevSeduta = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
                 #serDevSchienale = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
 
-                serDevSeduta = serial.Serial('/dev/ttyACM1', serial_speed)
-                serDevSchienale = serial.Serial('/dev/ttyACM0', serial_speed)
+                serDevSeduta = serial.Serial('/dev/ttyACM0', serial_speed)
+                serDevSchienale = serial.Serial('/dev/ttyACM1', serial_speed)
 
                 inputSeduta = serDevSeduta.readline()
                 inputSchienale = serDevSchienale.readline()
@@ -54,9 +55,18 @@ def collectData():
                 equalizedData = []
 
                 for temp in data:
-                    value = float(temp)
-                    equalizedData.append(value)
-                    #equalizedData.append(value/peso)
+                    #if contains whitespaces and numbers
+                    try:
+                        value = float(temp)
+                        if math.isnan(value):
+                            saveRow = False
+                            print("####### lettura scartata ###########")
+                        else:
+                            saveRow = True
+                            equalizedData.append(value)
+                    except ValueError:
+                        print("Value error")
+
 
                 equalizedData.append(peso)
                 equalizedData.append(altezza)
@@ -67,9 +77,11 @@ def collectData():
                 date = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
                 equalizedData.append(date)
 
-                filewriter.writerow(equalizedData)
+                if saveRow:
+                    filewriter.writerow(equalizedData)
+                #filewriter.writerow(equalizedData)
                 #print("Write "+ str(i+1) +"° row")
-                time.sleep(0.5)
+                time.sleep(0.2)
             print("csv saved")
             csvfile.close()
 
