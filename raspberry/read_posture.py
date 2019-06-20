@@ -4,6 +4,7 @@ import datetime
 import uuid
 import time
 import os
+import requests
 
 # RICHIEDERE AL SERVER INFO DELL'UTENTE (peso, altezza , età, sesso)
 
@@ -14,13 +15,31 @@ eta = 25
 sesso = "M"
 
 serial_speed = 115200
+sendOK = ""
+
+API_URL = 'Http://192.168.43.136:8000'
+
+def sendCSV(filePath):
+    global sendOK
+
+    with open("dataset/{}".format(filePath)) as fp:
+        content = fp.read()
+    response = requests.post('{}/query_model'.format(API_URL), data=content)
+    print(response.json())
+
+    if response:
+        sendOK = "OK"
+        return sendOk
+
 
 # For stabilize initial startup
-print("Waiting 5 seconds for stabilize sensors")
-time.sleep(5)
+print("Waiting 10 seconds for stabilize sensors")
+time.sleep(10)
 
 while True:
+
     unique_filename = "realtimeView/"+str(uuid.uuid4())+"realtime_view.csv"
+    sendOk = ""
 
     with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -32,11 +51,14 @@ while True:
 
         for i in range(0,10):
             # read five relevations from Arduino
-            #serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
-            #serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
 
-            serDevSeduta = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
-            serDevSchienale = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
+            # macOS serialPort
+            #serDevSeduta = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
+            #serDevSchienale = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
+
+            # linux serialPort
+            serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
+            serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
 
             inputSeduta = serDevSeduta.readline()
             inputSchienale = serDevSchienale.readline()
@@ -45,6 +67,8 @@ while True:
             decodedSchienale = inputSchienale.decode("utf-8")
 
             receivedData = decodedSeduta + "\t" + decodedSchienale
+
+            #receivedData = "1\t2\t3\t4\t5\t6\t7"
             data = receivedData.split("\t")
 
             equalizedData = []
@@ -56,22 +80,24 @@ while True:
             filewriter.writerow(equalizedData)
             #row_list.append(equalizedData)
 
-            time.sleep(0.4)
+            time.sleep(0.1)
 
+        '''
+        meanData = [float(sum(l))/len(l) for l in zip(*row_list)]
+        meanData.append(peso)
+        meanData.append(altezza)
+        meanData.append(eta)
+        meanData.append(sesso)
+        filewriter.writerow(equalizedData)
+        '''
 
-        #meanData = [float(sum(l))/len(l) for l in zip(*row_list)]
-
-        #meanData.append(peso)
-        #meanData.append(altezza)
-        #meanData.append(eta)
-        #meanData.append(sesso)
-
-        #filewriter.writerow(equalizedData)
-        print("------------ SUCCESS ------------")
         csvfile.close()
 
-        # SEND TO SERVER
+        # SEND TO SERVER AND DELETE CSV
         delete_filename = unique_filename
-        #os.remove("dataset/{}".format(delete_filename))
-
-        # time.sleep(4)
+        sendCSV(unique_filename)
+        if sendOK:
+            print("------------ SUCCESS ------------")
+        else:
+            print("------------ ERROR ------------")
+        os.remove("dataset/{}".format(delete_filename))
