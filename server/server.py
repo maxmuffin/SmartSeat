@@ -7,6 +7,7 @@ import uuid
 import pandas as pd
 from flask import Flask, request, abort, jsonify, send_from_directory
 import joblib
+import numpy
 
 UPLOAD_DIRECTORY = "./server/data/uploaded_files"
 DB_FILE = "./server/DB/SmartSeat.db"
@@ -53,32 +54,24 @@ def query_model():
     # Load Trained Model
     rfc = joblib.load('./server/trained_model.skl')
     # CSV data to pandas array
-    with open(os.path.join(UPLOAD_DIRECTORY, "request_data.csv"), "wb") as fp:
+    filename = str(uuid.uuid4())
+    with open(os.path.join(UPLOAD_DIRECTORY, filename + ".csv"), "wb") as fp:
         fp.write(request.data)
-    file_csv = "./server/data/uploaded_files/request_data.csv"
+    file_csv = "./server/data/uploaded_files/"+filename+".csv"
 
-    columns_name = ['pelvic_incidence',
-                    'pelvic_tilt numeric',
-                    'lumbar_lordosis_angle',
-                    'sacral_slope',
-                    'pelvic_radius',
-                    'degree_spondylolisthesis']
-    # columns_name = ['seduta1',
-    #                 'seduta2',
-    #                 'seduta3',
-    #                 'sedata4',
-    #                 'schienale1',
-    #                 'schienale2',
-    #                 'schienale3']
-    csv_file_predict = pd.read_csv(file_csv, names=columns_name)
-    # Print value
-    print(csv_file_predict.shape)
-    print(csv_file_predict.head())
-    x_test = csv_file_predict
-    # Query to Model
-    rfc_predict = rfc.predict(x_test)
-    print(rfc_predict)
-    return '{"prediction":"'+rfc_predict[0]+'"}'
+    columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3']
+
+    csv_file_predict = pd.read_csv(file_csv,names=columnsName)
+    print(csv_file_predict.head(10))
+    os.remove("./server/data/uploaded_files/" + filename + ".csv")
+    x_query = csv_file_predict
+    try:
+        rfc_predict = rfc.predict(x_query)
+        print("Predict ", rfc_predict)
+        return '{"prediction":"' + numpy.array2string(rfc_predict) + '"}'
+    except ValueError as err:
+        print(err)
+        return '{"prediction": "ERROR"}'
 
 
 @api.route("/signup", methods=["POST"])
@@ -186,4 +179,4 @@ def unbind(unbind_id):
 
 
 if __name__ == "__main__":
-    api.run(debug=True, host='0.0.0.0', port=8000, threaded=True)
+    api.run(debug=True, host='192.168.43.136', port=8000, threaded=True)

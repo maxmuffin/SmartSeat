@@ -1,6 +1,6 @@
 import requests
 
-API_URL = 'Http://0.0.0.0:8000'
+API_URL = 'Http://192.168.43.136:8000'
 
 response = requests.get('{}/files'.format(API_URL))
 print(response.json())
