@@ -5,20 +5,25 @@ import uuid
 import time
 import os
 import requests
-import math
 
-# RICHIEDERE AL SERVER INFO DELL'UTENTE (peso, altezza , età, sesso)
+'''
+# macOS port
+port1 = '/dev/tty.usbmodem14101'
+port2 = '/dev/tty.usbmodem14201'
+'''
+# linux port
+port1 = '/dev/ttyACM0'
+port2 = '/dev/ttyACM1'
 
-# Il dato dei singoli valori del csv è la media di 10 valori presi a distanza di 0.4s l'una
+serial_speed = 115200
+
+API_URL = 'Http://192.168.43.136:8000'
+sendOK = ""
+
 peso = 50
 altezza = 153
 eta = 25
 sesso = "M"
-
-serial_speed = 115200
-sendOK = ""
-
-API_URL = 'Http://192.168.43.136:8000'
 
 def sendCSV(filePath):
     global sendOK
@@ -46,7 +51,7 @@ while True:
 
     unique_filename = "realtimeView/"+str(uuid.uuid4())+"realtime_view.csv"
     sendOk = ""
-    saveRow = True
+
 
     with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -56,24 +61,28 @@ while True:
         #row_list = []
 
         for i in range(0,10):
-            # read five relevations from Arduino
 
-            # macOS serialPort
-            #serDevSeduta = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
-            #serDevSchienale = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
+            saveRow = True
 
-            # linux serialPort
-            serDevSeduta = serial.Serial('/dev/ttyACM0', 115200)
-            serDevSchienale = serial.Serial('/dev/ttyACM1', 115200)
+            # read relevations from Arduino
+            ser1 = serial.Serial(port1, serial_speed)
+            ser2 = serial.Serial(port2, serial_speed)
 
-            inputSeduta = serDevSeduta.readline()
-            inputSchienale = serDevSchienale.readline()
+            inputSer1 = ser1.readline()
+            inputSer2 = ser2.readline()
 
-            decodedSeduta = inputSeduta.decode("utf-8")
-            decodedSchienale = inputSchienale.decode("utf-8")
+            decodedSer1 = inputSer1.decode("utf-8")
+            decodedSer2 = inputSer2.decode("utf-8")
 
-            #print("Seduta:     "+ decodedSeduta)
-            #print("Schienale:  "+ decodedSchienale)
+            if decodedSer1.count('\t') == 3:
+                decodedSeduta = decodedSer1
+                decodedSchienale = decodedSer2
+                print("Seduta: "+ port1 +"\nSchienale: "+port2)
+            else:
+                decodedSeduta = decodedSer2
+                decodedSchienale = decodedSer1
+                print("Seduta: "+ port2 +"\nSchienale: "+port1)
+
 
             receivedData = decodedSeduta + "\t" + decodedSchienale
 
@@ -81,19 +90,16 @@ while True:
             data = receivedData.split("\t")
 
             equalizedData = []
+
             for temp in data:
-                #if contains whitespaces and numbers
+                # if contains whitespaces and numbers
                 try:
                     value = float(temp)
-                    if math.isnan(value):
-                        saveRow = False
-                        print("####### lettura scartata ###########")
-                    else:
-                        saveRow = True
-                        equalizedData.append(value)
-                except ValueError:
-                    print("Value error")
+                    equalizedData.append(value)
 
+                except ValueError:
+                    saveRow = False
+                    print("Discard Row")
 
             #print("Take relevation")
             if saveRow:
@@ -120,4 +126,5 @@ while True:
             print("------------ SUCCESS ------------")
         else:
             print("------------ ERROR ------------")
+            
         os.remove("dataset/{}".format(delete_filename))

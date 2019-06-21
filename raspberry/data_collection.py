@@ -6,6 +6,15 @@ import time
 import os
 import datetime
 
+'''
+# macOS port
+port1 = '/dev/tty.usbmodem14101'
+port2 = '/dev/tty.usbmodem14201'
+'''
+# linux port
+port1 = '/dev/ttyACM0'
+port2 = '/dev/ttyACM1'
+
 serial_speed = 115200
 
 peso = float(input("Inserisci peso (Kg): "))
@@ -24,19 +33,28 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
     filewriter.writerow(['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3', 'peso', 'altezza', 'eta', 'sesso','postura', 'timestamp'])
     startTime = datetime.datetime.now()
     for i in range(0,20):
-        # read five relevations from Arduino
 
-        #serDevSeduta = serial.Serial('/dev/ttyACM1', serial_speed)
-        #serDevSchienale = serial.Serial('/dev/ttyACM0', serial_speed)
+        saveRow = True
 
-        serDevSeduta = serial.Serial('/dev/tty.usbmodem14201', serial_speed)
-        serDevSchienale = serial.Serial('/dev/tty.usbmodem14101', serial_speed)
+        # read relevations from Arduino
+        ser1 = serial.Serial(port1, serial_speed)
+        ser2 = serial.Serial(port2, serial_speed)
 
-        inputSeduta = serDevSeduta.readline()
-        inputSchienale = serDevSchienale.readline()
+        inputSer1 = ser1.readline()
+        inputSer2 = ser2.readline()
 
-        decodedSeduta = inputSeduta.decode("utf-8")
-        decodedSchienale = inputSchienale.decode("utf-8")
+        decodedSer1 = inputSer1.decode("utf-8")
+        decodedSer2 = inputSer2.decode("utf-8")
+
+        if decodedSer1.count('\t') == 3:
+            decodedSeduta = decodedSer1
+            decodedSchienale = decodedSer2
+            print("Seduta: "+ port1 +"\nSchienale: "+port2)
+        else:
+            decodedSeduta = decodedSer2
+            decodedSchienale = decodedSer1
+            print("Seduta: "+ port2 +"\nSchienale: "+port1)
+
 
         receivedData = decodedSeduta + "\t" + decodedSchienale
         #receivedData = decodedSeduta + "\t7\t8\t9"
@@ -47,9 +65,15 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         equalizedData = []
 
         for temp in data:
-            value = float(temp)
-            equalizedData.append(value)
-            #equalizedData.append(value/peso)
+            # if contains whitespaces and numbers
+            try:
+                value = float(temp)
+                equalizedData.append(value)
+                #equalizedData.append(value/peso)
+            except ValueError:
+                saveRow = False
+                print("Discard Row")
+
 
         equalizedData.append(peso)
         equalizedData.append(altezza)
@@ -60,7 +84,9 @@ with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
         date = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
         equalizedData.append(date)
 
-        filewriter.writerow(equalizedData)
+        if saveRow:
+            filewriter.writerow(equalizedData)
+
         print("Write "+ str(i+1) +"° row")
         time.sleep(0.5)
 
