@@ -17,6 +17,8 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 api = Flask(__name__)
 
+last_prediction = [0, 10]
+chair_on = False
 
 @api.route("/files")
 def list_files():
@@ -51,6 +53,7 @@ def post_file(filename):
 
 @api.route("/query_model", methods=["POST"])
 def query_model():
+    chair_on = True
     # Load Trained Model
     rfc = joblib.load('./server/trained_model.skl')
     # CSV data to pandas array
@@ -61,14 +64,26 @@ def query_model():
 
     columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3']
 
-    csv_file_predict = pd.read_csv(file_csv,names=columnsName)
+    csv_file_predict = pd.read_csv(file_csv, names=columnsName)
     print(csv_file_predict.head(10))
     os.remove("./server/data/uploaded_files/" + filename + ".csv")
     x_query = csv_file_predict
     try:
         rfc_predict = rfc.predict(x_query)
         print("Predict ", rfc_predict)
-        return '{"prediction":"' + numpy.array2string(rfc_predict) + '"}'
+        unique, counts = numpy.unique(rfc_predict, return_counts=True)
+        unique_counts = dict(zip(unique, counts))
+        print(unique_counts)
+
+        max_acc = 0
+        max_val = 0
+        for val, acc in unique_counts.items():
+            if(acc > max_acc ) :
+                max_acc = acc
+                max_val = val
+        last_prediction = [max_val, max_acc]
+        print("Postura " + str(last_prediction[0]) + " al " + str(last_prediction[1] * 10) + "%")
+        return '{"prediction":"Postura ' + str(last_prediction[0]) + ' al ' + str(last_prediction[1] * 10) + '%"}'
     except ValueError as err:
         print(err)
         return '{"prediction": "ERROR"}'
@@ -84,6 +99,9 @@ def signup():
     name = signup_data['name']
     surname = signup_data['surname']
     email = signup_data['email']
+    weight = signup_data['weight']
+    height = signup_data['height']
+    sex = signup_data['sex']
 
     # Adding Salt to password
     salted_password = "salt45" + password + "56ty"
@@ -115,8 +133,9 @@ def signup():
         return '{"signed":"false"}', 201
     else:
         # Insert new user if not exists
-        query_login = "INSERT INTO USERS(USERNAME,PASSWORD,NAME,SURNAME,MAIL) " \
-                      "VALUES ('" + username + "','" + password + "','" + name + "','" + surname + "','" + email + "')"
+        query_login = "INSERT INTO USERS(USERNAME,PASSWORD,NAME,SURNAME,MAIL,WEIGHT,HEIGHT,SEX) " \
+                      "VALUES ('" + username + "','" + password + "','" + name + "','" + surname + "','" \
+                      + email + "','" + weight + "','" + height + "','" + sex + "')"
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         cursor.execute(query_login)
@@ -161,21 +180,65 @@ def login():
             ' "mail":"' + user_info[4] + '",' \
             ' "weight":"' + user_info[5] + '",' \
             ' "height":"' + user_info[6] + '",' \
-            ' "sex":"' + user_info[7] + ',"' \
+            ' "sex":"' + user_info[7] + '"' \
             '}', 201
     else:
         print("Logged False")
         return '{"logged":"false"}', 201
 
 
-@api.route("/bind/<bind_id>")
-def bind(bind_id):
-    print(bind_id)
+@api.route("/edit_personal_data",methods=["POST"])
+def edit_personal_data():
+    json_data = request.data
+    edit_data = json.loads(json_data)
+
+    username = edit_data['username']
+    password = edit_data['password']
+    weight = edit_data['weight']
+    height = edit_data['height']
+    sex = edit_data['sex']
+
+    query_check_exists = "SELECT * FROM USERS WHERE USERNAME='" + username + "'"
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute(query_check_exists)
+    username_exists = cursor.fetchone()
+    print("Log-in Check: ")
+    print(username_exists)
+    cursor.close()
+    conn.close()
+
+    result_query = str(username_exists)
+    result_query = result_query.replace("(", "")
+    result_query = result_query.replace(")", "")
+    result_query = result_query.replace("'", "")
+    user_info = result_query.split(", ")
+    print(user_info)
+
+    if user_info[0] == username and user_info[1] == password:
+        query_update = \
+            "UPDATE USERS SET WEIGHT = '" + weight + "', HEIGHT = '" + height + "', SEX = '" + sex + \
+            "' WHERE USERNAME = '" + username + "'"
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute(query_update)
+        cursor.close()
+        conn.commit()
+        conn.close()
+        print(query_update)
+        return '{"edit":"true"}'
+    else:
+        return '{"edit":"false"}'
 
 
-@api.route("/unbind/<unbind_id>")
-def unbind(unbind_id):
-    print(unbind_id)
+@api.route("/predict_value")
+def predict_value():
+    prediction = last_prediction
+    return  '{' \
+            '   "chairOn":"'+str(chair_on)+'",' \
+            '   "prediction":"'+str(prediction[0])+'",' \
+            '   "accuracy":"'+str(prediction[1]*10)+'%"' \
+            '}', 201
 
 
 if __name__ == "__main__":

@@ -3,12 +3,15 @@ import pandas as pd
 import matplotlib as mt
 import numpy as np
 import sklearn as sk
+import joblib
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix
-import joblib
+from imblearn.over_sampling import RandomOverSampler
+from collections import Counter
+from imblearn.over_sampling import SMOTE, ADASYN
 
 # list for column headers
 columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3',
@@ -25,12 +28,13 @@ print(csvFile.head())
 X = csvFile.drop(['peso', 'altezza', 'eta', 'sesso', 'postura', 'timestamp'], axis=1)
 y = csvFile['postura']
 
+X_resampled, y_resampled = SMOTE().fit_resample(X, y)
+print(sorted(Counter(y_resampled).items()))
 
 # implementing train and test data split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=66)
+X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.01, random_state=66)
 
 # Random Forest Model creation
-
 rfc = RandomForestClassifier(n_estimators=50)
 rfc.fit(X_train, y_train)
 
