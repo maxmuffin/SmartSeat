@@ -44,7 +44,7 @@ export default class SignUp extends React.Component {
     if (this.state.name != "" && this.state.surname != "" && this.state.username != ""
        && this.state.email != "" && this.state.password!="") {
         if (this.state.email.includes("@") && this.state.email.includes(".")) {
-           fetch('http://0.0.0.0:8000/signup', {
+           fetch('http://172.20.10.2:8000/signup', {
            method: 'POST',
            headers: {
                         'Accept': 'application/json',

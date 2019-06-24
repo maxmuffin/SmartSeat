@@ -27,19 +27,38 @@ export default class HomeScreen extends React.Component {
       this.goToProfile = this.goToProfile.bind(this);
     }
     componentDidMount() {
-    this.timeout = setInterval(() => {
-      let currentId = this.state.imageId;
-      console.log(currentId);
-      if (currentId == 7) {
-        this.setState({ imageId: 0});
-      }else{
-        this.setState({ imageId: currentId + 1});
-      };
-    }, 2000);
-  }
+    this.timer = setInterval(()=> this.getPosture(), 3000);
+    }
+
+    async getPosture(){
+
+       fetch('http://172.20.10.2:8000/predictValue', {method: "GET"})
+        .then((response) => response.json())
+        .then((responseData) =>
+        {
+          //set your data here
+           console.log(responseData.prediction);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+
+    }
+
+  /*  try {
+          this.timeout = setInterval(async () => {
+            fetch('http://192.168.43.136:8000/predictValue')
+              .then((response) => response.json())
+               .then((responseData) => {
+                 console.log(responseData.prediction)
+              }).done();
+          }, 3000);
+        } catch(e) {
+          console.log(e);
+        };*/
 
   componentWillUnmount() {
-    clearInterval(this.timeout);
+    //clearInterval(this.timeout);
   }
 
   goToProfile = () =>{
