@@ -23,21 +23,26 @@ export default class HomeScreen extends React.Component {
                           {id:"Assume the correct posture",image:require('../images/postures/7.png'), text: "Wrong Posture detected !", color: "red"},
                           {id:"Assume the correct posture",image:require('../images/postures/8.png'), text: "Wrong Posture detected !", color: "red"},
                         ],
+        predictValue:'',
       }
       this.goToProfile = this.goToProfile.bind(this);
     }
     componentDidMount() {
+    this.mounted = true;
     this.timer = setInterval(()=> this.getPosture(), 3000);
     }
 
     async getPosture(){
 
-       fetch('http://172.20.10.2:8000/predictValue', {method: "GET"})
+       fetch('http://192.168.43.136:8000/predict_value', {method: "GET"})
         .then((response) => response.json())
         .then((responseData) =>
         {
           //set your data here
-           console.log(responseData.prediction);
+
+           this.state.predictValue = responseData.prediction;
+           console.log(this.state.predictValue);
+           this.forceUpdate();
         })
         .catch((error) => {
             console.error(error);
@@ -58,7 +63,7 @@ export default class HomeScreen extends React.Component {
         };*/
 
   componentWillUnmount() {
-    //clearInterval(this.timeout);
+    clearInterval(this.timer);
   }
 
   goToProfile = () =>{
@@ -95,7 +100,7 @@ export default class HomeScreen extends React.Component {
               resizeMode="stretch"
               source={this.state.imageSource[this.state.imageId].image}
               />
-            <Text style={{ marginTop: 50, fontSize: 20,  }}> {this.state.imageSource[this.state.imageId].id}</Text>
+            <Text style={{ marginTop: 50, fontSize: 20,  color: "black"}}> {this.state.predictValue} </Text>
         </Content>
       </Container>
     );

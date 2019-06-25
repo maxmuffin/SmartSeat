@@ -16,7 +16,7 @@ export default class Profile extends React.Component {
     return {
       headerTitle: "Profile",
       headerRight: (
-              <TouchableHighlight onPress={this.userLogout}>
+              <TouchableHighlight onPress={() => this.userLogout}>
                <Icon size={30} style={styles.Logout} title="Profile" name={'ios-log-out'}/>
        </TouchableHighlight>
       ),
@@ -30,6 +30,12 @@ export default class Profile extends React.Component {
       super(props);
       this.state = {
         username: '',
+        password: '',
+        email: '',
+        name:'',
+        height:'',
+        weight:'',
+        sex:'',
       }
       this.userLogout = this.userLogout.bind(this);
     }
@@ -37,12 +43,29 @@ export default class Profile extends React.Component {
   async userLogout() {
     try {
       console.log("user logout");
-      await AsyncStorage.removeItem('id_token');
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('password');
+      await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('name');
+      await AsyncStorage.removeItem('height');
+      await AsyncStorage.removeItem('weight');
+      await AsyncStorage.removeItem('sex');
+
       this.alertSuccess('Logout Success!');
       this.props.navigation.navigate('Logout');
     } catch (error) {
       console.log('AsyncStorage error: ' + error.message);
     }
+  }
+
+  getUserInformation(){
+    this.state.username = await AsyncStorage.getItem('username');
+    this.state.password = await AsyncStorage.getItem('password');
+    this.state.email = await AsyncStorage.getItem('email');
+    this.state.name = await AsyncStorage.getItem('name');
+    this.state.height = await AsyncStorage.getItem('height');
+    this.state.weight = await AsyncStorage.getItem('weight');
+    this.state.sex = await AsyncStorage.getItem('sex');
   }
 
   alertSuccess = (text) =>{
