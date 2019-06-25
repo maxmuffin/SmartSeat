@@ -44,9 +44,9 @@ export default class Profile extends React.Component {
     try {
       console.log("user logout");
       await AsyncStorage.removeItem('username');
-      await AsyncStorage.removeItem('password');
       await AsyncStorage.removeItem('email');
       await AsyncStorage.removeItem('name');
+      await AsyncStorage.removeItem('surname');
       await AsyncStorage.removeItem('height');
       await AsyncStorage.removeItem('weight');
       await AsyncStorage.removeItem('sex');
@@ -58,14 +58,24 @@ export default class Profile extends React.Component {
     }
   }
 
-  getUserInformation(){
-    this.state.username = await AsyncStorage.getItem('username');
-    this.state.password = await AsyncStorage.getItem('password');
-    this.state.email = await AsyncStorage.getItem('email');
-    this.state.name = await AsyncStorage.getItem('name');
-    this.state.height = await AsyncStorage.getItem('height');
-    this.state.weight = await AsyncStorage.getItem('weight');
-    this.state.sex = await AsyncStorage.getItem('sex');
+  async getUserInformation(){
+    try {
+      this.state.username = await AsyncStorage.getItem('username');
+      this.state.email = await AsyncStorage.getItem('email');
+      this.state.name = await AsyncStorage.getItem('name');
+      this.state.surname = await AsyncStorage.getItem('surname');
+      this.state.height = await AsyncStorage.getItem('height');
+      this.state.weight = await AsyncStorage.getItem('weight');
+      this.state.sex = await AsyncStorage.getItem('sex');
+    } catch (error) {
+      console.log('AsyncStorage error: ' + error.message);
+    }
+  }
+
+  componentDidMount() {
+    (async () => {
+          await this.getUserInformation();
+      })();
   }
 
   alertSuccess = (text) =>{
@@ -79,9 +89,14 @@ export default class Profile extends React.Component {
   }
 
   render() {
+    (async () => {
+          await this.getUserInformation();
+          console.log(this.state.name);
+      })();
     return (
       <Container style={styles.container}>
-        <Content  contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+        <Content  contentContainerStyle={{ flexDirection:"column",justifyContent: 'center', flexGrow: 1}}>
+      
             <Button primary
             style={styles.signButton}
             onPress = {this.userLogout}>
