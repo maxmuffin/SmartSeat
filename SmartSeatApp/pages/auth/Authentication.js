@@ -48,7 +48,7 @@ export default class Login extends React.Component {
 
   doLogin() {
     if (this.state.username != "" && this.state.password != "") {
-           fetch('http://172.20.10.2:8000/login', {
+           fetch('http://192.168.43.136:8000/login', {
            method: 'POST',
            headers: {
                         'Accept': 'application/json',
@@ -63,7 +63,13 @@ export default class Login extends React.Component {
                 console.log('response object:',responseData.logged);
                 if (responseData.logged == "true") {
                   console.log('response logged:',responseData.logged);
-                  this.saveItem('id_token', this.state.username);
+                  this.saveItem("username", responseData.username);
+                  this.saveItem("password", responseData.password);
+                  this.saveItem("name", responseData.name);
+                  this.saveItem("email", responseData.email);
+                  this.saveItem("height",responseData.height);
+                  this.saveItem("weight", responseData.weight);
+                  this.saveItem("sex", responseData.sex);
                   this.props.navigation.navigate('App');
                 }else {
                   this.alertError("Username or Password are incorrect or null!")

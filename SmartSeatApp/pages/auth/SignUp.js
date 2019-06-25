@@ -4,7 +4,8 @@ import {
   View,
   TextInput,
   StyleSheet,
-  Alert
+  Alert,
+  Picker
 } from 'react-native';
 
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon, } from 'native-base';
@@ -20,7 +21,10 @@ export default class SignUp extends React.Component {
         surname: '',
         username: '',
         password: '',
-        email: ''
+        email: '',
+        weight:'',
+        height: '',
+        sex:'',
       }
       this.onChangeText = this.onChangeText.bind(this);
       this.doSignUp = this.doSignUp.bind(this);
@@ -42,31 +46,44 @@ export default class SignUp extends React.Component {
 
   doSignUp() {
     if (this.state.name != "" && this.state.surname != "" && this.state.username != ""
-       && this.state.email != "" && this.state.password!="") {
+       && this.state.email != "" && this.state.password!="" ) {
         if (this.state.email.includes("@") && this.state.email.includes(".")) {
-           fetch('http://172.20.10.2:8000/signup', {
-           method: 'POST',
-           headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                      },
-            body: JSON.stringify({
-              name: this.state.name,
-              surname: this.state.surname,
-              username: this.state.username,
-              password: this.state.password,
-              email: this.state.email
-           })
-            }).then((response) => response.json())
-              .then((responseData) => {
-                console.log('response object:',responseData);
-                if (responseData.signed == "true") {
-                  this.saveItem("id_token", this.state.username);
-                  this.props.navigation.navigate('App');
-                }else {
-                  this.alertError("Username already exists")
-                }
-               }).done();
+          if (this.state.weight!= "" && this.state.sex!="" && this.state.height!="") {
+             fetch('http://192.168.43.136:8000/signup', {
+             method: 'POST',
+             headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                        },
+              body: JSON.stringify({
+                name: this.state.name,
+                surname: this.state.surname,
+                username: this.state.username,
+                password: this.state.password,
+                email: this.state.email,
+                weight: this.state.weight,
+                height: this.state.height,
+                sex: this.state.sex,
+             })
+              }).then((response) => response.json())
+                .then((responseData) => {
+                  console.log('response object:',responseData);
+                  if (responseData.signed == "true") {
+                    this.saveItem("username", this.state.username);
+                    this.saveItem("password", this.state.password);
+                    this.saveItem("name", this.state.name);
+                    this.saveItem("email", this.state.email);
+                    this.saveItem("height", this.state.height);
+                    this.saveItem("weight", this.state.weight);
+                    this.saveItem("sex", this.state.sex);
+                    this.props.navigation.navigate('App');
+                  }else {
+                    this.alertError("Username already exists")
+                  }
+                 }).done();
+             }else{
+               this.alertError("Compile your personal info!");
+          }
          }else{
            this.alertError("Wrong email!");
          }
@@ -84,9 +101,22 @@ export default class SignUp extends React.Component {
   }
 
   render() {
+    var arrHeight = [];
+    var height= 150;
+    for (var i = 0; i <= 40; i++) {
+      arrHeight[i] = height.toString();
+      height++;
+    };
+
+    var arrWeight = [];
+    var weight= 50;
+    for (var i = 0; i <= 50; i++) {
+      arrWeight[i] = weight.toString();
+      weight++;
+    };
     return (
       <Container style={styles.container}>
-        <Content  contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+        <Content  contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingTop:20}}>
           <Item rounded style={styles.input}>
             <Input
             placeholder='Name'
@@ -132,6 +162,39 @@ export default class SignUp extends React.Component {
             onChangeText={val => this.onChangeText('password', val)}
           />
           </Item>
+          <Item style={{flexDirection:"row",flex:1, alignItems: 'center', justifyContent:"center", marginTop:0}}>
+          <Picker
+            selectedValue={this.state.sex}
+            style={{width: 100}}
+            onValueChange={(itemValue, itemIndex) =>
+              this.setState({sex: itemValue})
+            }>
+            <Picker.Item label="Male" value="male" />
+            <Picker.Item label="Female" value="female" />
+          </Picker>
+          <Picker
+            selectedValue={this.state.height}
+            mode="dropdown"
+            style={{width: 90}}
+            onValueChange={(itemValue, itemIndex) =>
+              this.setState({height: itemValue})
+            }>
+            {arrHeight.map((itemValue, itemIndex) => {
+                return (<Picker.Item label={itemValue+" cm"} value={itemIndex} key={itemIndex}/>)
+            })}
+          </Picker>
+          <Picker style={{flexDirection:"row"}}
+            selectedValue={this.state.weight}
+            mode="dropdown"
+            style={{width: 90}}
+            onValueChange={(itemValue, itemIndex) =>
+              this.setState({weight: itemValue})
+            }>
+            {arrWeight.map((itemValue, itemIndex) => {
+                return (<Picker.Item label={itemValue+" kg"} value={itemIndex} key={itemIndex}/>)
+            })}
+          </Picker>
+        </Item>
           <Button primary
           style={styles.signUpButton}
           onPress = {this.doSignUp}>
@@ -160,8 +223,7 @@ const styles = StyleSheet.create({
     borderColor: '#67baf6',
     alignSelf: 'center',
     width: 200,
-    padding: 8,
     justifyContent: 'center',
-    marginTop: 10,
+    margin:0
   }
 })
