@@ -64,12 +64,13 @@ export default class Login extends React.Component {
                 if (responseData.logged == "true") {
                   console.log('response logged:',responseData.logged);
                   this.saveItem("username", responseData.username);
-                  this.saveItem("password", responseData.password);
                   this.saveItem("name", responseData.name);
+                  this.saveItem("surname", responseData.surname);
                   this.saveItem("email", responseData.email);
                   this.saveItem("height",responseData.height);
                   this.saveItem("weight", responseData.weight);
                   this.saveItem("sex", responseData.sex);
+                  console.log(responseData);
                   this.props.navigation.navigate('App');
                 }else {
                   this.alertError("Username or Password are incorrect or null!")

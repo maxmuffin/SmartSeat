@@ -70,8 +70,8 @@ export default class SignUp extends React.Component {
                   console.log('response object:',responseData);
                   if (responseData.signed == "true") {
                     this.saveItem("username", this.state.username);
-                    this.saveItem("password", this.state.password);
                     this.saveItem("name", this.state.name);
+                    this.saveItem("surname", this.state.surname);
                     this.saveItem("email", this.state.email);
                     this.saveItem("height", this.state.height);
                     this.saveItem("weight", this.state.weight);
@@ -180,7 +180,7 @@ export default class SignUp extends React.Component {
               this.setState({height: itemValue})
             }>
             {arrHeight.map((itemValue, itemIndex) => {
-                return (<Picker.Item label={itemValue+" cm"} value={itemIndex} key={itemIndex}/>)
+                return (<Picker.Item label={itemValue+" cm"} value={itemValue} key={itemIndex}/>)
             })}
           </Picker>
           <Picker style={{flexDirection:"row"}}
@@ -191,7 +191,7 @@ export default class SignUp extends React.Component {
               this.setState({weight: itemValue})
             }>
             {arrWeight.map((itemValue, itemIndex) => {
-                return (<Picker.Item label={itemValue+" kg"} value={itemIndex} key={itemIndex}/>)
+                return (<Picker.Item label={itemValue+" kg"} value={itemValue} key={itemIndex}/>)
             })}
           </Picker>
         </Item>
