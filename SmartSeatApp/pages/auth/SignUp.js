@@ -21,7 +21,7 @@ export default class SignUp extends React.Component {
         surname: '',
         username: '',
         password: '',
-        email: '',
+        mail: '',
         weight:'',
         height: '',
         sex:'',
@@ -46,8 +46,8 @@ export default class SignUp extends React.Component {
 
   doSignUp() {
     if (this.state.name != "" && this.state.surname != "" && this.state.username != ""
-       && this.state.email != "" && this.state.password!="" ) {
-        if (this.state.email.includes("@") && this.state.email.includes(".")) {
+       && this.state.mail != "" && this.state.password!="" ) {
+        if (this.state.mail.includes("@") && this.state.mail.includes(".")) {
           if (this.state.weight!= "" && this.state.sex!="" && this.state.height!="") {
              fetch('http://192.168.43.136:8000/signup', {
              method: 'POST',
@@ -60,7 +60,7 @@ export default class SignUp extends React.Component {
                 surname: this.state.surname,
                 username: this.state.username,
                 password: this.state.password,
-                email: this.state.email,
+                mail: this.state.mail,
                 weight: this.state.weight,
                 height: this.state.height,
                 sex: this.state.sex,
@@ -72,7 +72,7 @@ export default class SignUp extends React.Component {
                     this.saveItem("username", this.state.username);
                     this.saveItem("name", this.state.name);
                     this.saveItem("surname", this.state.surname);
-                    this.saveItem("email", this.state.email);
+                    this.saveItem("mail", this.state.mail);
                     this.saveItem("height", this.state.height);
                     this.saveItem("weight", this.state.weight);
                     this.saveItem("sex", this.state.sex);
@@ -85,7 +85,7 @@ export default class SignUp extends React.Component {
                this.alertError("Compile your personal info!");
           }
          }else{
-           this.alertError("Wrong email!");
+           this.alertError("Wrong mail!");
          }
        } else {
         this.alertError("Fields are wrong or incomplete");
@@ -136,11 +136,11 @@ export default class SignUp extends React.Component {
           </Item>
           <Item rounded style={styles.input}>
           <Input
-            placeholder='Email'
+            placeholder='Mail'
             autoCapitalize="none"
             placeholderTextColor='white'
             style={{ color: 'white' }}
-            onChangeText={val => this.onChangeText('email', val)}
+            onChangeText={val => this.onChangeText('mail', val)}
           />
           </Item>
           <Item rounded style={styles.input}>
