@@ -26,67 +26,48 @@ export default class GraphScreen extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Content  contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
-          <Text style={ {fontSize: 25}}> Your daily postures</Text>
-
-        <ProgressChart
-                style= {styles.ProgressChart}
-                data={data}
-                width={screenWidth}
-                height={250}
-                chartConfig={chartConfig}
+        <Content  contentContainerStyle={{ justifyContent: 'flex-start', flex: 1, alignItems: 'center'}}>
+            <LineChart
+              data={{
+                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                datasets: [{
+                  data: [
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100,
+                    Math.random() * 100
+                  ]
+                }]
+              }}
+              width={Dimensions.get('window').width-32} // from react-native
+              height={400}
+              yAxisLabel={'$'}
+              chartConfig={{
+                backgroundColor: '#e26a00',
+                backgroundGradientFrom: '#fb8c00',
+                backgroundGradientTo: '#ffa726',
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16
+                }
+              }}
+              bezier
+              style={{
+                marginVertical: 32,
+                borderRadius: 16,
+                marginRight: 16,
+                marginLeft: 16,
+              }}
             />
-          <ContributionGraph
-            values={commitsData}
-            endDate={new Date('2017-04-01')}
-            numDays={105}
-            width={screenWidth}
-            height={220}
-            chartConfig={chartConfig}
-          />
         </Content>
       </Container>
     );
   }
 }
-const commitsData = [
-  { date: '2017-01-02', count: 1 },
-  { date: '2017-01-03', count: 2 },
-  { date: '2017-01-04', count: 3 },
-  { date: '2017-01-05', count: 4 },
-  { date: '2017-01-06', count: 5 },
-  { date: '2017-01-30', count: 2 },
-  { date: '2017-01-31', count: 3 },
-  { date: '2017-03-01', count: 2 },
-  { date: '2017-04-02', count: 4 },
-  { date: '2017-03-05', count: 2 },
-  { date: '2017-02-30', count: 4 }
-];
 
-const chartConfig={
-      backgroundColor: '#e26a00',
-      backgroundGradientFrom: '#fb8c00',
-      backgroundGradientTo: '#ffa726',
-      color: (opacity = 0) => `rgba(255, 255, 255, ${opacity})`,
-      style: {
-        borderRadius: 30,
-        padding: 40,
-        marginTop:20,
-
-
-      }
-    };
-const screenWidth = Dimensions.get('window').width;
-const data = [0.4, 0.6, 0.8,0.1,0.2];
-const data2 ={
-  labels: ['Test1', 'Test2'],
-  legend: ['L1', 'L2', 'L3'],
-  data: [
-    [60, 60, 60],
-    [30,30,60],
-  ],
-  barColors: ['#dfe4ea', '#ced6e0', '#a4b0be'],
- }
 const styles = StyleSheet.create({
   input: {
     width: 250,
