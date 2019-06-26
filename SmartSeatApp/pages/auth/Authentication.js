@@ -66,7 +66,7 @@ export default class Login extends React.Component {
                   this.saveItem("username", responseData.username);
                   this.saveItem("name", responseData.name);
                   this.saveItem("surname", responseData.surname);
-                  this.saveItem("email", responseData.email);
+                  this.saveItem("mail", responseData.mail);
                   this.saveItem("height",responseData.height);
                   this.saveItem("weight", responseData.weight);
                   this.saveItem("sex", responseData.sex);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet , Image} from 'react-native';
+import { View, TouchableOpacity, StyleSheet , Image, ImageBackground} from 'react-native';
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Colors, Thumbnail } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HeaderButtons, { HeaderButton} from 'react-navigation-header-buttons';
@@ -107,6 +107,7 @@ export default class HomeScreen extends React.Component {
   }
 }
 const styles = StyleSheet.create({
+
  tryButton:{
    backgroundColor: '#67baf6',
     borderColor: '#67baf6',
