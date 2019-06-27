@@ -54,4 +54,3 @@ json_data3 = \
     '}'
 response = requests.post('{}/login'.format(API_URL), data=json_data3)
 print(response.json())
-

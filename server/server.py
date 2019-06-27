@@ -17,8 +17,12 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 api = Flask(__name__)
 
-last_prediction = [0, 10]
+last_prediction = [-1, 0]
 chair_on = False
+
+with open("./server/last_prediction.txt", "w") as fp1:
+    fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
+
 
 @api.route("/files")
 def list_files():
@@ -82,6 +86,8 @@ def query_model():
                 max_acc = acc
                 max_val = val
         last_prediction = [max_val, max_acc]
+        with open("./server/last_prediction.txt", "w") as fp1:
+            fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
         print("Postura " + str(last_prediction[0]) + " al " + str(last_prediction[1] * 10) + "%")
         return '{"prediction":"Postura ' + str(last_prediction[0]) + ' al ' + str(last_prediction[1] * 10) + '%"}'
     except ValueError as err:
@@ -135,7 +141,7 @@ def signup():
         # Insert new user if not exists
         query_login = "INSERT INTO USERS(USERNAME,PASSWORD,NAME,SURNAME,MAIL,WEIGHT,HEIGHT,SEX) " \
                       "VALUES ('" + username + "','" + password + "','" + name + "','" + surname + "','" \
-                      + email + "','" + weight + "','" + height + "','" + sex + "')"
+                      + email + "','" + str(weight) + "','" + str(height) + "','" + sex + "')"
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         cursor.execute(query_login)
@@ -231,15 +237,23 @@ def edit_personal_data():
         return '{"edit":"false"}'
 
 
+@api.route("/")
+
 @api.route("/predict_value")
 def predict_value():
-    prediction = last_prediction
-    return  '{' \
-            '   "chairOn":"'+str(chair_on)+'",' \
-            '   "prediction":"'+str(prediction[0])+'",' \
-            '   "accuracy":"'+str(prediction[1]*10)+'%"' \
-            '}', 201
+    with open("./server/last_prediction.txt", "r") as fp1:
+        p = fp1.read()
+        print(p)
+        prediction = p.split(",")
+        if prediction[0] in ['2', '3', '4', '5', '6']:
+            prediction[0] = '2'
+        print(prediction)
+        return  '{' \
+                '   "chairOn":"'+str(prediction[2])+'",' \
+                '   "prediction":"'+str(prediction[0])+'",' \
+                '   "accuracy":"'+str(prediction[1]*10)+'%"' \
+                '}', 201
 
 
 if __name__ == "__main__":
-    api.run(debug=True, host='172.20.10.2', port=8000, threaded=True)
+    api.run(debug=True, host='192.168.43.136', port=8000, threaded=True)

@@ -1,4 +1,5 @@
 import sqlite3
+from influxdb import InfluxDBClient
 
 
 def create_connection():
@@ -14,7 +15,7 @@ def create_connection():
         "   MAIL\tTEXT\tNOT NULL," +
         "   WEIGHT\tREAL," +
         "   HEIGHT\tREAL," +
-        "   SEX\tCHAR(1)" +
+        "   SEX\tTEXT" +
         ")"
     )
     conn.close()
@@ -22,4 +23,7 @@ def create_connection():
 
 if __name__ == '__main__':
     create_connection()
+    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
+    client.create_database('Users')
+
 
