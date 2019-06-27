@@ -22,9 +22,9 @@ export default class SignUp extends React.Component {
         username: '',
         password: '',
         mail: '',
-        weight:'',
-        height: '',
-        sex:'',
+        weight:'50',
+        height: '150',
+        sex:'male',
       }
       this.onChangeText = this.onChangeText.bind(this);
       this.doSignUp = this.doSignUp.bind(this);
@@ -116,7 +116,7 @@ export default class SignUp extends React.Component {
     };
     return (
       <Container style={styles.container}>
-        <Content  contentContainerStyle={{ justifyContent: 'center', alignItems: 'center', paddingTop:20}}>
+        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 100}}>
           <Item rounded style={styles.input}>
             <Input
             placeholder='Name'
@@ -162,10 +162,11 @@ export default class SignUp extends React.Component {
             onChangeText={val => this.onChangeText('password', val)}
           />
           </Item>
-          <Item style={{flexDirection:"row",flex:1, alignItems: 'center', justifyContent:"center", marginTop:0}}>
+          <Item style={{flexDirection:"row",flex:1}}>
           <Picker
             selectedValue={this.state.sex}
-            style={{width: 100}}
+            style={{width: 100, height: 50}}
+            itemStyle={{height:44}}
             onValueChange={(itemValue, itemIndex) =>
               this.setState({sex: itemValue})
             }>
@@ -175,7 +176,8 @@ export default class SignUp extends React.Component {
           <Picker
             selectedValue={this.state.height}
             mode="dropdown"
-            style={{width: 90}}
+            style={{width: 90, height: 50}}
+            itemStyle={{height:44}}
             onValueChange={(itemValue, itemIndex) =>
               this.setState({height: itemValue})
             }>
@@ -186,7 +188,8 @@ export default class SignUp extends React.Component {
           <Picker style={{flexDirection:"row"}}
             selectedValue={this.state.weight}
             mode="dropdown"
-            style={{width: 90}}
+            style={{width: 90, height: 50}}
+            itemStyle={{height:44}}
             onValueChange={(itemValue, itemIndex) =>
               this.setState({weight: itemValue})
             }>
@@ -208,6 +211,13 @@ export default class SignUp extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'white',
+  },
   input: {
     width: 250,
     height: 50,

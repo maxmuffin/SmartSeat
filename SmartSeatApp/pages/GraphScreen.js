@@ -22,13 +22,13 @@ export default class GraphScreen extends React.Component {
 
   render() {
     return (
+
       <ScrollView horizontal={true}>
         <ChartContainer timeRange={timeseries.timerange()} width={800}>
           <ChartRow height="200">
               <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
               <Charts>
-                  <LineChart axis="axis1" series={series1}/>
-                  <LineChart axis="axis2" series={series2}/>
+                  <LineChart axis="axis1" series={timeseries}/>
               </Charts>
               <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
           </ChartRow>
@@ -42,43 +42,15 @@ const data = {
     name: "traffic",
     columns: ["time", "in", "out"],
     points: [
-        [1400425947000, 52, 41],
-        [1400425948000, 18, 45],
-        [1400425949000, 26, 49],
-        [1400425950000, 93, 81]
+        [1400425947000, 52],
+        [1400425948000, 18],
+        [1400425949000, 26],
+        [1400425950000, 93]
     ]
 };
 
 const timeseries = new TimeSeries(data);
-
+var timerange = timeseries.timerange();
 const styles = StyleSheet.create({
-  input: {
-    width: 250,
-    height: 50,
-    backgroundColor: '#67baf6',
-    margin: 10,
-    padding: 8,
-    color: 'white',
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  container:{
-    backgroundColor:'white',
-  },
-  signButton:{
-    borderColor: '#67baf6',
-    alignSelf: 'center',
-    width: 200,
-    padding: 8,
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  ProfileIcon:{
-    padding:5,
-    marginRight:10,
-  },
-  ProgressChart:{
-    margin:20
-  }
+
 })
