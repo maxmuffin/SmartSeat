@@ -4,15 +4,17 @@ import {
   View,
   TextInput,
   StyleSheet,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon } from 'native-base';
+import IpAddress from './constant';
 
 export default class Login extends React.Component {
-  static navigationOptions = {
+  /*static navigationOptions = {
     title: 'Enter in Smart Seat',
-  };
+  };*/
 
   constructor(props) {
       super(props);
@@ -48,7 +50,7 @@ export default class Login extends React.Component {
 
   doLogin() {
     if (this.state.username != "" && this.state.password != "") {
-           fetch('http://192.168.43.136:8000/login', {
+           fetch(IpAddress+'/login', {
            method: 'POST',
            headers: {
                         'Accept': 'application/json',
@@ -89,12 +91,19 @@ export default class Login extends React.Component {
     return (
       <Container style={styles.container}>
         <Content  contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
+        <View style={{paddingBottom: 25}}>
+        <Image
+          style={{width: 300, height: 117}}
+          source={require('../../images/smartSeat_welcome.png')}
+        />
+        </View>
+
           <Item rounded style={styles.input}>
           <Input
             placeholder='Username'
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('username', val)}
           />
           </Item>
@@ -103,11 +112,12 @@ export default class Login extends React.Component {
             placeholder='Password'
             secureTextEntry={true}
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('password', val)}
           />
           </Item>
+          <View style={{paddingBottom: 15}} />
           <Button primary
           style={styles.signButton}
           onPress = {this.doLogin}>
@@ -126,18 +136,19 @@ export default class Login extends React.Component {
 
 const styles = StyleSheet.create({
   input: {
-    width: 250,
+    width: 280,
     height: 50,
-    backgroundColor: '#67baf6',
+    backgroundColor: '#f7f7f7',
     margin: 10,
     padding: 8,
-    color: 'white',
+    color: '#787878',
     borderRadius: 14,
     fontSize: 18,
     fontWeight: '500',
   },
   signButton:{
-    borderColor: '#67baf6',
+    borderColor: '#787878',
+    backgroundColor: '#6cc3c0',
     alignSelf: 'center',
     width: 200,
     padding: 8,

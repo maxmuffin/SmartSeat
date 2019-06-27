@@ -5,10 +5,11 @@ import {
   TextInput,
   StyleSheet,
   Alert,
-  Picker
+  Picker,
+  ScrollView
 } from 'react-native';
-
-import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon, } from 'native-base';
+import IpAddress from './constant';
+import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon } from 'native-base';
 
 export default class SignUp extends React.Component {
   static navigationOptions = {
@@ -49,7 +50,7 @@ export default class SignUp extends React.Component {
        && this.state.mail != "" && this.state.password!="" ) {
         if (this.state.mail.includes("@") && this.state.mail.includes(".")) {
           if (this.state.weight!= "" && this.state.sex!="" && this.state.height!="") {
-             fetch('http://192.168.43.136:8000/signup', {
+             fetch(IpAddress+'/signup', {
              method: 'POST',
              headers: {
                           'Accept': 'application/json',
@@ -115,22 +116,23 @@ export default class SignUp extends React.Component {
       weight++;
     };
     return (
-      <Container style={styles.container}>
-        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 100}}>
+      <ScrollView contentContainerStyle={styles.Container}>
+
+        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20}}>
           <Item rounded style={styles.input}>
             <Input
             placeholder='Name'
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('name', val)}/>
           </Item>
           <Item rounded style={styles.input}>
           <Input
             placeholder='Surname'
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('surname', val)}
           />
           </Item>
@@ -138,8 +140,8 @@ export default class SignUp extends React.Component {
           <Input
             placeholder='Mail'
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('mail', val)}
           />
           </Item>
@@ -147,8 +149,8 @@ export default class SignUp extends React.Component {
           <Input
             placeholder='Username'
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('username', val)}
           />
           </Item>
@@ -157,12 +159,12 @@ export default class SignUp extends React.Component {
             placeholder='Password'
             secureTextEntry={true}
             autoCapitalize="none"
-            placeholderTextColor='white'
-            style={{ color: 'white' }}
+            placeholderTextColor='#6fd3d0'
+            style={{ color: '#787878' }}
             onChangeText={val => this.onChangeText('password', val)}
           />
           </Item>
-          <Item style={{flexDirection:"row",flex:1}}>
+          <Item style={{flexDirection:"row",flex:1, paddingLeft:10, paddingRight: 5, paddingBottom: 30}}>
           <Picker
             selectedValue={this.state.sex}
             style={{width: 100, height: 50}}
@@ -176,7 +178,7 @@ export default class SignUp extends React.Component {
           <Picker
             selectedValue={this.state.height}
             mode="dropdown"
-            style={{width: 90, height: 50}}
+            style={{width: 120, height: 50}}
             itemStyle={{height:44}}
             onValueChange={(itemValue, itemIndex) =>
               this.setState({height: itemValue})
@@ -188,7 +190,7 @@ export default class SignUp extends React.Component {
           <Picker style={{flexDirection:"row"}}
             selectedValue={this.state.weight}
             mode="dropdown"
-            style={{width: 90, height: 50}}
+            style={{width: 110, height: 50}}
             itemStyle={{height:44}}
             onValueChange={(itemValue, itemIndex) =>
               this.setState({weight: itemValue})
@@ -205,7 +207,7 @@ export default class SignUp extends React.Component {
           </Button>
 
         </Content>
-      </Container>
+      </ScrollView>
     )
   }
 }
@@ -219,18 +221,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   input: {
-    width: 250,
+    width: 280,
     height: 50,
-    backgroundColor: '#67baf6',
+    backgroundColor: '#f7f7f7',
     margin: 10,
     padding: 8,
-    color: 'white',
+    color: '#787878',
     borderRadius: 14,
     fontSize: 18,
     fontWeight: '500',
   },
   signUpButton:{
-    borderColor: '#67baf6',
+    borderColor: '#787878',
+    backgroundColor: '#6cc3c0',
     alignSelf: 'center',
     width: 200,
     justifyContent: 'center',

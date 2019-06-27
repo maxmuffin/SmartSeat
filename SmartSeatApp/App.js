@@ -47,9 +47,9 @@ const AppStack  = createMaterialBottomTabNavigator(
                   <View>
                       <Icon style={[{color: tintColor}]} size={25} name={'ios-stats'}/>
                   </View>),
-              activeColor: '#f60c0d',
-              inactiveColor: '#f65a22',
-              barStyle: { backgroundColor: '#f69b31' },
+              activeColor: '#ffffff',
+              inactiveColor: '#6cc3c0',
+              barStyle: { backgroundColor: '#787878' },
           }
       },
       mySeat: { screen: mySeatStack,
@@ -59,9 +59,9 @@ const AppStack  = createMaterialBottomTabNavigator(
                   <View>
                       <Icon style={[{color: tintColor}]} size={25} name={'ios-body'}/>
                   </View>),
-              activeColor: '#615af6',
-              inactiveColor: '#46f6d7',
-              barStyle: { backgroundColor: '#67baf6' },
+              activeColor: '#ffffff',
+              inactiveColor: '#787878',
+              barStyle: { backgroundColor: '#6cc3c0' },
           }
       },
     },
