@@ -98,7 +98,7 @@ def signup():
     password = signup_data['password']
     name = signup_data['name']
     surname = signup_data['surname']
-    email = signup_data['email']
+    email = signup_data['mail']
     weight = signup_data['weight']
     height = signup_data['height']
     sex = signup_data['sex']
@@ -242,4 +242,4 @@ def predict_value():
 
 
 if __name__ == "__main__":
-    api.run(debug=True, host='192.168.43.136', port=8000, threaded=True)
+    api.run(debug=True, host='172.20.10.2', port=8000, threaded=True)
