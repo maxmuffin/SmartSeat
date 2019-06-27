@@ -1,21 +1,16 @@
 import React from 'react';
-import {View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from 'react-native-chart-kit';
+import {View, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { Charts, ChartContainer, ChartRow, YAxis, LineChart } from "react-timeseries-charts";
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon } from 'native-base';
+import { TimeSeries, TimeRange } from "pondjs";
+
 
 export default class GraphScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: "Health Data",
       headerRight: (
-          <Icon size={30} style={styles.ProfileIcon} title="Profile" name={'ios-contact'} onPress={() => navigation.navigate('Profile')}/>
+        <Icon size={30} style={styles.ProfileIcon} title="Profile" name={'ios-contact'} onPress={() => navigation.navigate('Profile')}/>
       ),
       headerTitleStyle:{
         color: '#f69b31',
@@ -23,50 +18,38 @@ export default class GraphScreen extends React.Component {
       }
     };
   };
+
+
   render() {
     return (
-      <Container style={styles.container}>
-        <Content  contentContainerStyle={{ justifyContent: 'flex-start', flex: 1, alignItems: 'center'}}>
-            <LineChart
-              data={{
-                labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-                datasets: [{
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100
-                  ]
-                }]
-              }}
-              width={Dimensions.get('window').width-32} // from react-native
-              height={400}
-              yAxisLabel={'$'}
-              chartConfig={{
-                backgroundColor: '#e26a00',
-                backgroundGradientFrom: '#fb8c00',
-                backgroundGradientTo: '#ffa726',
-                decimalPlaces: 2, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: {
-                  borderRadius: 16
-                }
-              }}
-              bezier
-              style={{
-                marginVertical: 32,
-                borderRadius: 16,
-                marginRight: 16,
-                marginLeft: 16,
-              }}
-            />
-        </Content>
-      </Container>
+      <ScrollView horizontal={true}>
+        <ChartContainer timeRange={timeseries.timerange()} width={800}>
+          <ChartRow height="200">
+              <YAxis id="axis1" label="AUD" min={0.5} max={1.5} width="60" type="linear" format="$,.2f"/>
+              <Charts>
+                  <LineChart axis="axis1" series={series1}/>
+                  <LineChart axis="axis2" series={series2}/>
+              </Charts>
+              <YAxis id="axis2" label="Euro" min={0.5} max={1.5} width="80" type="linear" format="$,.2f"/>
+          </ChartRow>
+        </ChartContainer>
+      </ScrollView>
     );
   }
 }
+
+const data = {
+    name: "traffic",
+    columns: ["time", "in", "out"],
+    points: [
+        [1400425947000, 52, 41],
+        [1400425948000, 18, 45],
+        [1400425949000, 26, 49],
+        [1400425950000, 93, 81]
+    ]
+};
+
+const timeseries = new TimeSeries(data);
 
 const styles = StyleSheet.create({
   input: {

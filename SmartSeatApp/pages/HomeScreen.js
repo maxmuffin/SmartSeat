@@ -14,16 +14,14 @@ export default class HomeScreen extends React.Component {
         username: '',
         imageId: 0,
         imageSource: [
-                          {id:"Great!",image:require('../images/postures/1.png'), text: "Correct posture !", color: "green"},
-                          {id:"Assume the correct posture",image:require('../images/postures/2.png'), text: "Wrong Posture detected !", color: "red"},
-                          {id:"Assume the correct posture",image:require('../images/postures/3.png'), text: "Wrong Posture detected !", color: "red"},
-                          {id:"Assume the correct posture",image:require('../images/postures/4.png'), text: "Wrong Posture detected !", color: "red"},
-                          {id:"Assume the correct posture",image:require('../images/postures/5.png'), text: "Wrong Posture detected !", color: "red"},
-                          {id:"Assume the correct posture",image:require('../images/postures/6.png'), text: "Wrong Posture detected !", color: "red"},
-                          {id:"Assume the correct posture",image:require('../images/postures/7.png'), text: "Wrong Posture detected !", color: "red"},
-                          {id:"Assume the correct posture",image:require('../images/postures/8.png'), text: "Wrong Posture detected !", color: "red"},
-                        ],
-        predictValue:'',
+                          {id:"noConnection",image:require('../images/noConnection.png')},
+                          {id:"noSitting",image:require('../images/noSitting.png')},
+                          {id:"correct",image:require('../images/correct.png')},
+                          {id:"wrong",image:require('../images/wrong.png')},
+
+
+                      ],
+        predictValue:''
       }
       this.goToProfile = this.goToProfile.bind(this);
     }
@@ -32,21 +30,33 @@ export default class HomeScreen extends React.Component {
     this.timer = setInterval(()=> this.getPosture(), 3000);
     }
 
+
     async getPosture(){
-
-       fetch('http://192.168.43.136:8000/predict_value', {method: "GET"})
-        .then((response) => response.json())
+       fetch('http://172.20.10.2:8000/predict_value', {method: "GET"})
+        .then(
+          (response) => {
+            if(response.ok == true && response.status >= 200 && response.status < 300) {
+              return response.json();
+            } else {
+              console.log("Server can't be reached!");
+              this.state.imageId = 1;
+            }
+          },
+        )
         .then((responseData) =>
-        {
-          //set your data here
-
-           this.state.predictValue = responseData.prediction;
-           console.log(this.state.predictValue);
+          {
+            console.log(responseData);
+            if (response.chairOn == "True") {
+              this.state.imageId = responseData.prediction;
+            }else{
+              this.state.imageId = 0;
+            }
            this.forceUpdate();
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+         })
+      .catch((error) => {
+        this.state.imageId = 0;
+        this.forceUpdate();
+      });
 
     }
 
@@ -90,17 +100,17 @@ export default class HomeScreen extends React.Component {
     return (
       <Container style={styles.container}>
         <Content  contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
-          <Text style={{ marginTop: 30, fontSize: 30, color: this.state.imageSource[this.state.imageId].color }}> {this.state.imageSource[this.state.imageId].text}</Text>
-            <Image
+          <Image
               style={{
-                alignSelf: 'center',
-                height: 300,
-                width: 250,
+                flex: 1,
+                 alignSelf: 'stretch',
+                 width: undefined,
+                 height: undefined
+
               }}
-              resizeMode="stretch"
+              resizeMode="cover"
               source={this.state.imageSource[this.state.imageId].image}
               />
-            <Text style={{ marginTop: 50, fontSize: 20,  color: "black"}}> {this.state.predictValue} </Text>
         </Content>
       </Container>
     );

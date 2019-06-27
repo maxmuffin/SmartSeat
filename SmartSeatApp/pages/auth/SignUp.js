@@ -49,7 +49,7 @@ export default class SignUp extends React.Component {
        && this.state.mail != "" && this.state.password!="" ) {
         if (this.state.mail.includes("@") && this.state.mail.includes(".")) {
           if (this.state.weight!= "" && this.state.sex!="" && this.state.height!="") {
-             fetch('http://192.168.43.136:8000/signup', {
+             fetch('http://172.20.10.2:8000/signup', {
              method: 'POST',
              headers: {
                           'Accept': 'application/json',
