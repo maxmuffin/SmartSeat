@@ -48,7 +48,7 @@ export default class Login extends React.Component {
 
   doLogin() {
     if (this.state.username != "" && this.state.password != "") {
-           fetch('http://172.20.10.2:8000/login', {
+           fetch('http://192.168.43.136:8000/login', {
            method: 'POST',
            headers: {
                         'Accept': 'application/json',

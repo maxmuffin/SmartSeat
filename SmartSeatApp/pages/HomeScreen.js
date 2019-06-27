@@ -33,7 +33,7 @@ export default class HomeScreen extends React.Component {
 
 
     async getPosture(){
-       fetch('http://172.20.10.2:8000/predict_value', {method: "GET"})
+       fetch('http://192.168.43.136:8000/predict_value', {method: "GET"})
         .then(
           (response) => {
             if(response.ok == true && response.status >= 200 && response.status < 300) {
