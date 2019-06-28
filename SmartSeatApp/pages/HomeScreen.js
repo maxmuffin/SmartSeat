@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet , Image, ImageBackground} from 'react-native';
+import { View, TouchableOpacity, StyleSheet , Image, ImageBackground, Dimensions} from 'react-native';
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Colors, Thumbnail } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HeaderButtons, { HeaderButton} from 'react-navigation-header-buttons';
@@ -12,16 +12,14 @@ export default class HomeScreen extends React.Component {
       super(props);
       this.state = {
         username: '',
-        imageId: 0,
+        imageId: 3,
         imageSource: [
-                          {id:"noConnection",image:require('../images/noConnection.png')},
-                          {id:"noSitting",image:require('../images/noSitting.png')},
-                          {id:"correct",image:require('../images/correct.png')},
-                          {id:"wrong",image:require('../images/wrong.png')},
-
-
-                      ],
-        predictValue:''
+                      {id:"noSitting",image:require('../images/noSitting.png')},
+                      {id:"correct",image:require('../images/correct.png')},
+                      {id:"wrong",image:require('../images/wrong.png')},
+                      {id:"logo",image:require('../images/smartSeat_logo.png')},
+                      {id:"noConnection",image:require('../images/noConnection.png')}
+                    ],
       }
       this.goToProfile = this.goToProfile.bind(this);
     }
@@ -44,17 +42,17 @@ export default class HomeScreen extends React.Component {
           },
         )
         .then((responseData) =>
-          {
-            console.log(responseData);
-            if (response.chairOn == "True") {
-              this.state.imageId = responseData.prediction;
-            }else{
-              this.state.imageId = 0;
-            }
-           this.forceUpdate();
-         })
+        {
+          console.log(responseData);
+          if (responseData.chairOn === "True") {
+            this.state.imageId = responseData.prediction;
+          }else{
+            this.state.imageId = 4;
+          }
+         this.forceUpdate();
+       })
       .catch((error) => {
-        this.state.imageId = 0;
+        this.state.imageId = 4;
         this.forceUpdate();
       });
 
@@ -96,7 +94,7 @@ export default class HomeScreen extends React.Component {
 
 
   render() {
-
+    const { width, height } = Dimensions.get('window');
     return (
       <Container style={styles.container}>
         <Content  contentContainerStyle={{ justifyContent: 'center', flex: 1, alignItems: 'center'}}>
@@ -104,11 +102,10 @@ export default class HomeScreen extends React.Component {
               style={{
                 flex: 1,
                  alignSelf: 'stretch',
-                 width: undefined,
-                 height: undefined
-
+                 width: width,
+                 height: height
               }}
-              resizeMode="cover"
+              resizeMode="contain"
               source={this.state.imageSource[this.state.imageId].image}
               />
         </Content>

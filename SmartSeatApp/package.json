@@ -12,6 +12,7 @@
     "pondjs": "^0.8.10",
     "react": "^16.8.3",
     "react-dom": "^16.8.6",
+    "react-google-charts": "^3.0.13",
     "react-mobile-picker": "^0.1.12",
     "react-native": "0.59.5",
     "react-native-chart-kit": "^2.6.1",
@@ -26,13 +27,14 @@
     "react-native-responsive-linechart": "^2.0.1",
     "react-native-selectme": "^1.2.3",
     "react-native-slide-modal-picker": "^1.2.1",
-    "react-native-svg": "^9.4.0",
+    "react-native-svg": "^9.5.1",
     "react-native-vector-icons": "^6.4.2",
     "react-native-video": "^4.4.1",
     "react-navigation": "^3.9.1",
     "react-navigation-header-buttons": "^2.3.1",
     "react-navigation-material-bottom-tabs": "^1.0.0",
-    "react-timeseries-charts": "^0.16.1"
+    "react-timeseries-charts": "^0.16.1",
+    "recharts": "^1.6.2"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",

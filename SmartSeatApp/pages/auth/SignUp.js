@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Alert,
   Picker,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native';
 import IpAddress from './constant';
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon } from 'native-base';
@@ -115,10 +116,12 @@ export default class SignUp extends React.Component {
       arrWeight[i] = weight.toString();
       weight++;
     };
+    const { width, height } = Dimensions.get('window');
     return (
-      <ScrollView contentContainerStyle={styles.Container}>
 
-        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20}}>
+      <ScrollView contentContainerStyle={styles.Container}>
+        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20, width: width,
+        height: height }} resizeMode="contain">
           <Item rounded style={styles.input}>
             <Input
             placeholder='Name'
