@@ -1,2 +1,2 @@
-var IpAddress = 'http://192.168.178.110:8000';
+var IpAddress = 'http://192.168.1.105:8000';
 export default IpAddress;
