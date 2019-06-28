@@ -99,47 +99,49 @@ export default class Profile extends React.Component {
         <View style={styles.userRow}>
           <View style={styles.userImage}>
             <Icon size={100} style={styles.ProfileIcon} title="Profile" name={'ios-contact'}/>
-            <Text style={{fontSize: 35,  color: "black", marginLeft:15}}> {this.state.username} </Text>
+            <Text style={{fontSize: 35,  color: "#6cc3c0", marginLeft:15}}> {this.state.username} </Text>
           </View>
         </View>
         <View style={styles.userColumn}>
           <Item>
             <Input disabled placeholder={this.state.name} style={styles.infoBox}/>
-            <Text style={{color:"grey"}}>Name</Text>
+            <Text style={{color:"#dadada"}}>Name</Text>
           </Item>
           <Item>
 
             <Input id="surnameBox" disabled placeholder={this.state.surname} style={styles.infoBox}/>
-            <Text style={{color:"grey"}}>Surname</Text>
+            <Text style={{color:"#dadada"}}>Surname</Text>
           </Item>
           <Item>
 
-          <Input id="mailBox" disabled placeholder={this.state.mail} style={styles.infoBox}/>
-            <Text style={{color:"grey"}}>Mail</Text>
+          <Input id="mailBox" disabled placeholder={this.state.mail} style={styles.infoBoxMail}/>
+            <Text style={{color:"#dadada"}}>Mail</Text>
           </Item>
           <Item>
 
             <Input id="weightBox" disabled placeholder={this.state.weight} style={styles.infoBox}/>
-            <Text style={{color:"grey"}}>Weight (kg)</Text>
+            <Text style={{color:"#dadada"}}>Weight (kg)</Text>
           </Item>
           <Item>
 
             <Input id="heightBox" disabled placeholder={this.state.height} style={styles.infoBox}/>
-            <Text style={{color:"grey"}}>Height (cm)</Text>
+            <Text style={{color:"#dadada"}}>Height (cm)</Text>
           </Item>
           <Item>
             <Input id="sexBox" disabled placeholder={this.state.sex} style={styles.infoBox}/>
-            <Text style={{color:"grey"}}>Gender</Text>
+            <Text style={{color:"#dadada"}}>Gender</Text>
           </Item>
         </View>
         <View style={styles.Logout}>
           <TouchableOpacity onPress={this.userLogout}>
-            <Text>Logout </Text>
-            <View>
-                 <Icon size={30} style={styles.Logout} title="Profile" name={'ios-log-out'}/>
-            </View>
+                 <Icon color='#F32E2E' size={30} title="Profile" name={'ios-log-out'}>
+                 <Text style={{fontSize: 16,color: "#F32E2E", alignItems: "center", justifyContent: "center"}}>  Logout</Text>
+                 </Icon>
+
          </TouchableOpacity>
        </View>
+
+
       </ScrollView>
 
 
@@ -166,9 +168,11 @@ const styles = StyleSheet.create({
     fontSize:20,
   },
   Logout:{
-    padding:5,
-    fontSize:20,
-    marginRight:10,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 5,
+    justifyContent: 'center',
   },
  ProfileIcon:{
    padding:5,
@@ -204,6 +208,11 @@ const styles = StyleSheet.create({
  infoBox:{
    alignItems: 'center',
    fontSize: 25,
+   flex:1,
+ },
+ infoBoxMail:{
+   alignItems: 'center',
+   fontSize: 15,
    flex:1,
  },
  Logout:{
