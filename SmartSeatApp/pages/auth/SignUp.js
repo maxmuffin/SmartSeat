@@ -116,12 +116,12 @@ export default class SignUp extends React.Component {
       arrWeight[i] = weight.toString();
       weight++;
     };
-    const { width, height } = Dimensions.get('window');
+    const { width1, height1 } = Dimensions.get('window');
     return (
 
       <ScrollView contentContainerStyle={styles.Container}>
-        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20, width: width,
-        height: height }} resizeMode="contain">
+        <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', paddingVertical: 20, width: width1,
+        height: height1 }} resizeMode="contain">
           <Item rounded style={styles.input}>
             <Input
             placeholder='Name'
