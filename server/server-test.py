@@ -8,14 +8,9 @@ import pandas as pd
 from flask import Flask, request, abort, jsonify, send_from_directory
 import joblib
 import numpy
-import socket
-
-hostname = socket.gethostname()
-IPAddr = socket.gethostbyname(hostname)
-port = 8000
 
 UPLOAD_DIRECTORY = "./server/data/uploaded_files"
-DB_FILE = "../server/DB/SmartSeat.db"
+DB_FILE = "./server/DB/SmartSeat.db"
 
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
@@ -27,10 +22,6 @@ chair_on = False
 
 with open("./server/last_prediction.txt", "w") as fp1:
     fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
-
-
-def save_prediction(prediction):
-    return " "
 
 
 @api.route("/files")
@@ -258,9 +249,9 @@ def predict_value():
         return  '{' \
                 '   "chairOn":"'+str(prediction[2])+'",' \
                 '   "prediction":"'+str(prediction[0])+'",' \
-                '   "percentage":"'+str(prediction[1])+'0%"' \
+                '   "accuracy":"'+str(prediction[1])+'0%"' \
                 '}', 201
 
 
 if __name__ == "__main__":
-    api.run(debug=True, host=IPAddr, port=port, threaded=True)
+    api.run(debug=True, host='192.168.43.136', port=8000, threaded=True)

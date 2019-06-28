@@ -1,5 +1,6 @@
 import sqlite3
-#from influxdb import InfluxDBClient
+from influxdb import InfluxDBClient
+import time
 
 
 def create_connection():
@@ -21,9 +22,38 @@ def create_connection():
     conn.close()
 
 
-if __name__ == '__main__':
-    create_connection()
-    #client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
-    #client.create_database('Users')
+def create_influx_db():
+    clients = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
+    clients.create_database("SmartSeat")
+    return clients
 
+
+def save_prediction(clients, pred_value, acc_value):
+    json_body = [
+        {
+            "measurement": "Prediction",
+            "timestamp": time.time(),
+            "fields": {
+                "prediction": pred_value,
+                "accuracy": acc_value
+            }
+        }
+    ]
+    clients.write_points(json_body)
+
+
+if __name__ == '__main__':
+    #create_connection()
+    client = create_influx_db()
+    print("Write")
+    save_prediction(client, 1, 70)
+    time.sleep(3)
+    print("Write")
+    save_prediction(client, 2, 100)
+    time.sleep(3)
+    print("Write")
+    save_prediction(client, 1, 80)
+    time.sleep(3)
+    print("Write")
+    save_prediction(client, 0, 60)
 
