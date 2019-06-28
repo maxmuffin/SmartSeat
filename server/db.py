@@ -1,5 +1,5 @@
 import sqlite3
-from influxdb import InfluxDBClient
+#from influxdb import InfluxDBClient
 
 
 def create_connection():
@@ -23,7 +23,7 @@ def create_connection():
 
 if __name__ == '__main__':
     create_connection()
-    client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
-    client.create_database('Users')
+    #client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
+    #client.create_database('Users')
 
 
