@@ -3,12 +3,13 @@ import json
 import os
 import sqlite3
 import uuid
-
-import pandas as pd
-from flask import Flask, request, abort, jsonify, send_from_directory
 import joblib
 import numpy
 import socket
+import pandas as pd
+import time
+from flask import Flask, request, abort, jsonify, send_from_directory
+from influxdb import InfluxDBClient
 
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
@@ -29,8 +30,37 @@ with open("./server/last_prediction.txt", "w") as fp1:
     fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
 
 
-def save_prediction(prediction):
-    return " "
+def save_prediction(pred_value, acc_value):
+    clients = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
+    clients.create_database("SmartSeat")
+    json_body = [
+        {
+            "measurement": "Prediction",
+            "timestamp": time.time(),
+            "fields": {
+                "prediction": pred_value,
+                "accuracy": acc_value
+            }
+        }
+    ]
+    clients.write_points(json_body)
+
+
+def save_data(values):
+    clients = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
+    clients.create_database("SmartSeat")
+
+    json_body = [
+        {
+            "measurement": "Prediction",
+            "timestamp": time.time(),
+            "fields": {
+                "prediction": pred_value,
+                "accuracy": acc_value
+            }
+        }
+    ]
+    clients.write_points(json_body)
 
 
 @api.route("/files")
@@ -91,10 +121,12 @@ def query_model():
         max_acc = 0
         max_val = 0
         for val, acc in unique_counts.items():
-            if(acc > max_acc ) :
+            if acc > max_acc:
                 max_acc = acc
                 max_val = val
         last_prediction = [max_val, max_acc]
+        # saving prediction on InfluxDB
+        save_prediction(max_val,max_acc)
         with open("./server/last_prediction.txt", "w") as fp1:
             fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
         print("Postura " + str(last_prediction[0]) + " al " + str(last_prediction[1] * 10) + "%")
