@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -60,7 +61,6 @@
 		D89A10C6F8CB4CB7A6B3056D /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D0EB108EEF4411FAD7E048F /* MaterialIcons.ttf */; };
 		D90E95B0A3B94F3BAF2A6452 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B913733565C34475A665B056 /* libRNSVG.a */; };
 		E1F71125CB42485397A8AB05 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F27D58B69264D27AF373C2C /* EvilIcons.ttf */; };
-		EB9982E722C5FF8D003D9FF1 /* appicon3.png in Resources */ = {isa = PBXBuildFile; fileRef = EB9982B722C5FF8D003D9FF1 /* appicon3.png */; };
 		EBF415DC84A1420585400118 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BA35B7C4CA347B4BD8451BE /* FontAwesome5_Regular.ttf */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		EE380B139462440988BDE226 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B28ECE308B4A6FAE8F8253 /* libRNVectorIcons.a */; };
@@ -476,7 +476,6 @@
 		C4B28ECE308B4A6FAE8F8253 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		E3C5CDD8E71644EC96B2EB36 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		E4AA7E77EE02404ABF4A0413 /* libRNGestureHandler.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNGestureHandler.a; sourceTree = "<group>"; };
-		EB9982B722C5FF8D003D9FF1 /* appicon3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = appicon3.png; path = ../../../../Downloads/appicon3.png; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F3A386E6F7D04344ABDC274F /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
@@ -608,7 +607,6 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				EB9982B722C5FF8D003D9FF1 /* appicon3.png */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -1362,7 +1360,6 @@
 				44170ADDC69B48CE8C8E60F2 /* FontAwesome.ttf in Resources */,
 				78F8F95E6BD64E4EBFEBB376 /* FontAwesome5_Brands.ttf in Resources */,
 				D30F7D8F099E4262911612F4 /* FontAwesome5_Regular.ttf in Resources */,
-				EB9982E722C5FF8D003D9FF1 /* appicon3.png in Resources */,
 				1B00DF3A974E4358BB0B7594 /* FontAwesome5_Solid.ttf in Resources */,
 				6F830F86A1A940F79201A2AA /* Foundation.ttf in Resources */,
 				2EE04E5A0EB14E5BA9751009 /* Ionicons.ttf in Resources */,

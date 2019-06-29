@@ -16,7 +16,7 @@ export default class GraphScreen extends React.Component {
     return {
       headerTitle: "Health Data",
       headerTitleStyle:{
-        color: '#f69b31',
+        color: 'black',
         fontWeight: 'bold',
       }
     };
@@ -30,26 +30,27 @@ export default class GraphScreen extends React.Component {
       data: [
         {x: '10:00', y: 1},
         {x: '11:00', y: 2},
-        {x: '2018-02-03', y: 1},
-        {x: '2018-02-04', y: 1},
-        {x: '2018-02-05', y: 1},
-        {x: '2018-02-01', y: 1},
-        {x: '2018-02-02', y: 2},
-        {x: '2018-02-03', y: 1},
-        {x: '2018-02-04', y: 1},
-        {x: '2018-02-05', y: 1},
-        {x: '2018-02-01', y: 1},
-        {x: '2018-02-02', y: 2},
-        {x: '2018-02-03', y: 1},
-        {x: '2018-02-04', y: 1},
-        {x: '2018-02-05', y: 1},
-        {x: '2018-02-01', y: 1},
-        {x: '2018-02-02', y: 2},
-        {x: '2018-02-03', y: 1},
-        {x: '2018-02-04', y: 1},
-        {x: '2018-02-05', y: 1},
+        {x: '11:02', y: 0},
+        {x: '11:03', y: 1},
+        {x: '11:05', y: 1},
+        {x: '10:00', y: 1},
+        {x: '11:00', y: 2},
+        {x: '11:02', y: 0},
+        {x: '11:03', y: 1},
+        {x: '11:05', y: 1},
+        {x: '10:00', y: 1},
+        {x: '11:00', y: 2},
+        {x: '11:02', y: 0},
+        {x: '11:03', y: 1},
+        {x: '11:05', y: 1},
+        {x: '10:00', y: 1},
+        {x: '11:00', y: 2},
+        {x: '11:02', y: 0},
+        {x: '11:03', y: 1},
+        {x: '11:05', y: 1},
+
       ],
-      color: '#297AB1'
+      color: '#6cc3c0'
     }
   ]
 
@@ -90,13 +91,15 @@ export default class GraphScreen extends React.Component {
   ]
 
   return (
-    <Container contentContainerStyle={styles.Container}>
-      <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center', width: Dimensions.get('window').width,
+    <ScrollView contentContainerStyle={styles.Container}>
+      <Content  contentContainerStyle={{flex:1, justifyContent: 'space-between', alignItems:'center', width: Dimensions.get('window').width,
       height: Dimensions.get('window').height }} resizeMode="contain">
-      <PureChart data={sampleData} type='line' width= {Dimensions.get('window').width} height={200} numberOfXAxisGuideLine ={1} />
-      <PureChart data={sampleData1} type='bar' width= {Dimensions.get('window').width} height={200} numberOfXAxisGuideLine ={1} />
+      <Text style={{fontWeight: 'bold', color: '#787878'}}>Today</Text>
+      <PureChart data={sampleData} type='line' width= {Dimensions.get('window').width} height={250} numberOfYAxisGuideLine ={1}/>
+      <Text style={{fontWeight: 'bold'}}>Daily Postures</Text>
+      <PureChart data={sampleData1} type='bar' width= {Dimensions.get('window').width} height={250}/>
       </Content>
-    </Container>
+    </ScrollView>
     );
   }
 }
