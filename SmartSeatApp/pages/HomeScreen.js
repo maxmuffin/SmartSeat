@@ -88,6 +88,7 @@ export default class HomeScreen extends React.Component {
       ),
       headerTitleStyle:{
         fontWeight: 'bold',
+        color: '#858585'
       }
     };
   };

@@ -20,6 +20,7 @@ export default class Profile extends React.Component {
       headerTitle: "Profile",
       headerTitleStyle:{
         fontWeight: 'bold',
+        color: '#858585'
       }
     };
   };
