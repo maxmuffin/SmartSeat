@@ -33,7 +33,7 @@ export default class GraphScreen extends React.Component {
         {x: '11:02', y: 0},
         {x: '11:03', y: 1},
         {x: '11:05', y: 1},
-        {x: '10:00', y: 1},
+        {x: '10:00', y: 2},
         {x: '11:00', y: 2},
         {x: '11:02', y: 0},
         {x: '11:03', y: 1},
@@ -41,7 +41,7 @@ export default class GraphScreen extends React.Component {
         {x: '10:00', y: 1},
         {x: '11:00', y: 2},
         {x: '11:02', y: 0},
-        {x: '11:03', y: 1},
+        {x: '11:03', y: 2},
         {x: '11:05', y: 1},
         {x: '10:00', y: 1},
         {x: '11:00', y: 2},
@@ -90,17 +90,34 @@ export default class GraphScreen extends React.Component {
     }
   ]
 
+
+  var correctCount = 0;
+  var wrongCount = 0;
+  var noSitCount = 0;
+
+  for (i = 0; i < sampleData[0].data.length; i += 1) {
+       if (sampleData[0].data[i].y === 2) {
+  		correctCount += 1;
+  		}
+       if (sampleData[0].data[i].y === 1) {
+  		wrongCount += 1;
+  		}
+       if (sampleData[0].data[i].y === 0) {
+  		noSitCount += 1;
+  		}
+  	}
+
   let sampleData3 = [
   {
-    value: 50,
+    value: correctCount,
     label: 'Correct',
     color: '#7bd942',
   }, {
-    value: 30,
+    value: wrongCount,
     label: 'Wrong',
     color: '#ea304c'
   }, {
-    value: 40,
+    value: noSitCount,
     label: 'No sitted',
     color: '#c7c7c7'
   }
@@ -121,7 +138,7 @@ export default class GraphScreen extends React.Component {
       <ScrollView style={{paddingTop:15, paddingBottom:10}}>
       <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center' , paddingBottom: 20, paddingLeft:5, paddingRight:5,
        }} resizeMode="contain" >
-      <Text style={{fontSize: 15,  color: "#6cc3c0", paddingBottom: 5}}> Andamento giornaliero </Text>
+      <Text style={{fontSize: 15,  color: "#6cc3c0", paddingBottom: 5}}> Today </Text>
       <PureChart data={sampleData} type='line' xAxisGridLineColor={'#e7e7e7'} yAxisGridLineColor={'#e7e7e7'}/>
       <Text style={{paddingBottom:5}}></Text>
       <PureChart data={sampleData3} type='pie' />
@@ -130,7 +147,7 @@ export default class GraphScreen extends React.Component {
         <Text style={{fontSize: 10, fontWeight: 'bold', color: "#ea304c"}}> Wrong </Text>
         <Text style={{fontSize: 10, fontWeight: 'bold', color: "#c7c7c7"}}> No sitted </Text>
       </Text>
-      <Text style={{fontSize: 15,  color: "#6cc3c0", paddingTop:20, paddingBottom:5}}> Andamento settimanale </Text>
+      <Text style={{fontSize: 15,  color: "#6cc3c0", paddingTop:20, paddingBottom:5}}> Daily Postures </Text>
       <PureChart data={sampleData1} type='bar' numberOfXAxisGuideLine ={1} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}/>
 
       <Text style={{fontSize: 15,  color: "#dadada", paddingTop: 70, paddingBottom:5}}> Powered by SmartSeat® </Text>
