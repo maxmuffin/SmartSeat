@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 import json
 import os
@@ -27,7 +28,7 @@ last_prediction = [-1, 0]
 chair_on = False
 
 with open("./server/last_prediction.txt", "w") as fp1:
-    fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
+    fp1.write(str(last_prediction[0]) + "," + str(last_prediction[1]) + "," + str(chair_on))
 
 
 def save_prediction(pred_value, acc_value):
@@ -36,31 +37,77 @@ def save_prediction(pred_value, acc_value):
     json_body = [
         {
             "measurement": "Prediction",
-            "timestamp": time.time(),
             "fields": {
                 "prediction": pred_value,
                 "accuracy": acc_value
             }
         }
     ]
+    print("Saving to InfluxDB >> Prediction: " + str(pred_value) + ", Accuracy: " + str(acc_value))
     clients.write_points(json_body)
 
 
-def save_data(values):
-    clients = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
-    clients.create_database("SmartSeat")
+def get_values():
+    try:
+        client = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
+        query_all = 'select * from Prediction order by time asc;'
+        result_all = client.query(query_all)
+        points_all = list(result_all.get_points())
 
-    json_body = [
-        {
-            "measurement": "Prediction",
-            "timestamp": time.time(),
-            "fields": {
-                "prediction": pred_value,
-                "accuracy": acc_value
-            }
-        }
-    ]
-    clients.write_points(json_body)
+        # DAY MEASUREMENT by HOUR:MINUTE:SECOND
+        today = datetime.date.today()
+        arr_day = {}
+        for value in points_all:
+            if value['time'].split("T")[0] == str(today):
+                arr_day[(value['time'].split("T")[1]).split(".")[0]] = str(value['prediction'])
+
+        # ALL MEASUREMENT by POSTURE TYPE
+        check_date = str(datetime.date(1970, 1, 1))
+        counter_correct = 0
+        counter_wrong = 0
+        counter_no_sit = 0
+        arr_counter = {}
+        for value in points_all:
+            if value['time'].split("T")[0] != check_date:
+                check_date = value['time'].split("T")[0]
+                arr_counter[check_date] = {}
+                counter_correct = 0
+                counter_wrong = 0
+                counter_no_sit = 0
+                if value['prediction'] == 0:
+                    counter_no_sit = counter_no_sit + 1
+                    arr_counter[check_date]['no_sit'] = counter_no_sit
+                elif value['prediction'] == 1:
+                    counter_correct = counter_correct + 1
+                    arr_counter[check_date]['correct'] = counter_correct
+                elif value['prediction'] == 2:
+                    counter_wrong = counter_wrong + 1
+                    arr_counter[check_date]['wrong'] = counter_wrong
+            else:
+                if value['prediction'] == 0:
+                    counter_no_sit = counter_no_sit + 1
+                    arr_counter[check_date]['no_sit'] = counter_no_sit
+                elif value['prediction'] == 1:
+                    counter_correct = counter_correct + 1
+                    arr_counter[check_date]['correct'] = counter_correct
+                elif value['prediction'] == 2:
+                    counter_wrong = counter_wrong + 1
+                    arr_counter[check_date]['wrong'] = counter_wrong
+        arr_all = {'Correct': {}, 'Wrong': {}, 'Not Sitted': {}}
+        for date, val in arr_counter.items():
+            arr_all['Correct'][date] = val['correct']
+            arr_all['Wrong'][date] = val['wrong']
+            arr_all['Not Sitted'][date] = val['no_sit']
+
+        # FINAL ARRAY for the response (JSON)
+        arr_final = {'day_measurement': arr_day, 'all_measurement': arr_all}
+        response = json.dumps(arr_final)
+    except :
+        with open("./server/data/json_graph.json", "r") as fp2:
+            response = fp2.read()
+    print(response)
+
+    return response, 201
 
 
 @api.route("/files")
@@ -103,7 +150,7 @@ def query_model():
     filename = str(uuid.uuid4())
     with open(os.path.join(UPLOAD_DIRECTORY, filename + ".csv"), "wb") as fp:
         fp.write(request.data)
-    file_csv = "./server/data/uploaded_files/"+filename+".csv"
+    file_csv = "./server/data/uploaded_files/" + filename + ".csv"
 
     columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3']
 
@@ -126,9 +173,9 @@ def query_model():
                 max_val = val
         last_prediction = [max_val, max_acc]
         # saving prediction on InfluxDB
-        save_prediction(max_val,max_acc)
+        save_prediction(max_val, max_acc)
         with open("./server/last_prediction.txt", "w") as fp1:
-            fp1.write(str(last_prediction[0])+","+str(last_prediction[1])+","+str(chair_on))
+            fp1.write(str(last_prediction[0]) + "," + str(last_prediction[1]) + "," + str(chair_on))
         print("Postura " + str(last_prediction[0]) + " al " + str(last_prediction[1] * 10) + "%")
         return '{"prediction":"Postura ' + str(last_prediction[0]) + ' al ' + str(last_prediction[1] * 10) + '%"}'
     except ValueError as err:
@@ -222,19 +269,20 @@ def login():
             '{' \
             ' "logged":"true",' \
             ' "username":"' + user_info[0] + '",' \
-            ' "name":"' + user_info[2] + '",' \
-            ' "surname":"' + user_info[3] + '",' \
-            ' "mail":"' + user_info[4] + '",' \
-            ' "weight":"' + user_info[5] + '",' \
-            ' "height":"' + user_info[6] + '",' \
-            ' "sex":"' + user_info[7] + '"' \
-            '}', 201
+                                             ' "name":"' + user_info[2] + '",' \
+                                                                          ' "surname":"' + user_info[3] + '",' \
+                                                                                                          ' "mail":"' + \
+            user_info[4] + '",' \
+                           ' "weight":"' + user_info[5] + '",' \
+                                                          ' "height":"' + user_info[6] + '",' \
+                                                                                         ' "sex":"' + user_info[7] + '"' \
+                                                                                                                     '}', 201
     else:
         print("Logged False")
         return '{"logged":"false"}', 201
 
 
-@api.route("/edit_personal_data",methods=["POST"])
+@api.route("/edit_personal_data", methods=["POST"])
 def edit_personal_data():
     json_data = request.data
     edit_data = json.loads(json_data)
@@ -287,11 +335,17 @@ def predict_value():
         if prediction[0] in ['2', '3', '4', '5', '6']:
             prediction[0] = '2'
         print(prediction)
-        return  '{' \
-                '   "chairOn":"'+str(prediction[2])+'",' \
-                '   "prediction":"'+str(prediction[0])+'",' \
-                '   "percentage":"'+str(prediction[1])+'0%"' \
-                '}', 201
+        return '{' \
+               '   "chairOn":"' + str(prediction[2]) + '",' \
+                                                       '   "prediction":"' + str(prediction[0]) + '",' \
+                                                                                                  '   "percentage":"' + str(
+            prediction[1]) + '0%"' \
+                             '}', 201
+
+
+@api.route("/get_graph_values")
+def get_graph_values():
+    return get_values()
 
 
 if __name__ == "__main__":
