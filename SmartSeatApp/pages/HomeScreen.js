@@ -7,7 +7,6 @@ import IpAddress from './auth/constant';
 
 
 export default class HomeScreen extends React.Component {
-
   constructor(props) {
       super(props);
       this.state = {
@@ -23,11 +22,28 @@ export default class HomeScreen extends React.Component {
       }
       this.goToProfile = this.goToProfile.bind(this);
     }
+
+    static navigationOptions = ({ navigation }) => {
+      return {
+        headerTitle: "mySeat",
+        headerRight: (
+            <Icon size={30} style={styles.ProfileIcon} title="Profile" name={'ios-contact'} onPress={() => navigation.navigate('Profile')}/>
+        ),
+        headerTitleStyle:{
+          fontWeight: 'bold',
+          color: '#858585'
+        }
+      };
+    };
+
     componentDidMount() {
     this.mounted = true;
     this.timer = setInterval(()=> this.getPosture(), 3000);
     }
 
+    componentWillUnmount() {
+      clearInterval(this.timer);
+    }
 
     async getPosture(){
        fetch(IpAddress+'/predict_value', {method: "GET"})
@@ -55,44 +71,11 @@ export default class HomeScreen extends React.Component {
         this.state.imageId = 4;
         this.forceUpdate();
       });
-
-    }
-
-  /*  try {
-          this.timeout = setInterval(async () => {
-            fetch('http://192.168.43.136:8000/predictValue')
-              .then((response) => response.json())
-               .then((responseData) => {
-                 console.log(responseData.prediction)
-              }).done();
-          }, 3000);
-        } catch(e) {
-          console.log(e);
-        };*/
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
+  };
 
   goToProfile = () =>{
     this.props.navigation.navigate('Profile');
   };
-
-
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: "mySeat",
-      headerRight: (
-          <Icon size={30} style={styles.ProfileIcon} title="Profile" name={'ios-contact'} onPress={() => navigation.navigate('Profile')}/>
-      ),
-      headerTitleStyle:{
-        fontWeight: 'bold',
-        color: '#858585'
-      }
-    };
-  };
-
 
   render() {
     const { width, height } = Dimensions.get('window');
@@ -108,24 +91,14 @@ export default class HomeScreen extends React.Component {
               }}
               resizeMode="contain"
               source={this.state.imageSource[this.state.imageId].image}
-              />
+            />
         </Content>
       </Container>
     );
   }
 }
+
 const styles = StyleSheet.create({
-
- tryButton:{
-   backgroundColor: '#67baf6',
-    borderColor: '#67baf6',
-    alignSelf: 'center',
-    width: 200,
-    padding: 10,
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-
   ProfileIcon:{
     padding:5,
     marginRight:10,

@@ -16,6 +16,7 @@ export default class SignUp extends React.Component {
   static navigationOptions = {
     title: 'SignUp',
   };
+
   constructor(props) {
       super(props);
       this.state = {
@@ -131,84 +132,83 @@ export default class SignUp extends React.Component {
             onChangeText={val => this.onChangeText('name', val)}/>
           </Item>
           <Item rounded style={styles.input}>
-          <Input
-            placeholder='Surname'
-            autoCapitalize="none"
-            placeholderTextColor='#6fd3d0'
-            style={{ color: '#787878' }}
-            onChangeText={val => this.onChangeText('surname', val)}
-          />
+            <Input
+              placeholder='Surname'
+              autoCapitalize="none"
+              placeholderTextColor='#6fd3d0'
+              style={{ color: '#787878' }}
+              onChangeText={val => this.onChangeText('surname', val)}
+            />
           </Item>
           <Item rounded style={styles.input}>
-          <Input
-            placeholder='Mail'
-            autoCapitalize="none"
-            placeholderTextColor='#6fd3d0'
-            style={{ color: '#787878' }}
-            onChangeText={val => this.onChangeText('mail', val)}
-          />
+            <Input
+              placeholder='Mail'
+              autoCapitalize="none"
+              placeholderTextColor='#6fd3d0'
+              style={{ color: '#787878' }}
+              onChangeText={val => this.onChangeText('mail', val)}
+            />
           </Item>
           <Item rounded style={styles.input}>
-          <Input
-            placeholder='Username'
-            autoCapitalize="none"
-            placeholderTextColor='#6fd3d0'
-            style={{ color: '#787878' }}
-            onChangeText={val => this.onChangeText('username', val)}
-          />
+            <Input
+              placeholder='Username'
+              autoCapitalize="none"
+              placeholderTextColor='#6fd3d0'
+              style={{ color: '#787878' }}
+              onChangeText={val => this.onChangeText('username', val)}
+            />
           </Item>
           <Item rounded style={styles.input}>
-          <Input
-            placeholder='Password'
-            secureTextEntry={true}
-            autoCapitalize="none"
-            placeholderTextColor='#6fd3d0'
-            style={{ color: '#787878' }}
-            onChangeText={val => this.onChangeText('password', val)}
-          />
+            <Input
+              placeholder='Password'
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor='#6fd3d0'
+              style={{ color: '#787878' }}
+              onChangeText={val => this.onChangeText('password', val)}
+            />
           </Item>
           <Item style={{flexDirection:"row",flex:1, paddingLeft:10, paddingRight: 5, paddingBottom: 30}}>
-          <Picker
-            selectedValue={this.state.sex}
-            style={{width: 100, height: 50}}
-            itemStyle={{height:44}}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({sex: itemValue})
-            }>
-            <Picker.Item label="Male" value="male" />
-            <Picker.Item label="Female" value="female" />
-          </Picker>
-          <Picker
-            selectedValue={this.state.height}
-            mode="dropdown"
-            style={{width: 120, height: 50}}
-            itemStyle={{height:44}}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({height: itemValue})
-            }>
-            {arrHeight.map((itemValue, itemIndex) => {
-                return (<Picker.Item label={itemValue+" cm"} value={itemValue} key={itemIndex}/>)
-            })}
-          </Picker>
-          <Picker style={{flexDirection:"row"}}
-            selectedValue={this.state.weight}
-            mode="dropdown"
-            style={{width: 110, height: 50}}
-            itemStyle={{height:44}}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({weight: itemValue})
-            }>
-            {arrWeight.map((itemValue, itemIndex) => {
-                return (<Picker.Item label={itemValue+" kg"} value={itemValue} key={itemIndex}/>)
-            })}
-          </Picker>
-        </Item>
+            <Picker
+              selectedValue={this.state.sex}
+              style={{width: 100, height: 50}}
+              itemStyle={{height:44}}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({sex: itemValue})
+              }>
+              <Picker.Item label="Male" value="male" />
+              <Picker.Item label="Female" value="female" />
+            </Picker>
+            <Picker
+              selectedValue={this.state.height}
+              mode="dropdown"
+              style={{width: 120, height: 50}}
+              itemStyle={{height:44}}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({height: itemValue})
+              }>
+              {arrHeight.map((itemValue, itemIndex) => {
+                  return (<Picker.Item label={itemValue+" cm"} value={itemValue} key={itemIndex}/>)
+              })}
+            </Picker>
+            <Picker style={{flexDirection:"row"}}
+              selectedValue={this.state.weight}
+              mode="dropdown"
+              style={{width: 110, height: 50}}
+              itemStyle={{height:44}}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({weight: itemValue})
+              }>
+              {arrWeight.map((itemValue, itemIndex) => {
+                  return (<Picker.Item label={itemValue+" kg"} value={itemValue} key={itemIndex}/>)
+              })}
+            </Picker>
+          </Item>
           <Button primary
           style={styles.signUpButton}
           onPress = {this.doSignUp}>
           <Text>Sign Up</Text>
           </Button>
-
         </Content>
       </ScrollView>
     )
