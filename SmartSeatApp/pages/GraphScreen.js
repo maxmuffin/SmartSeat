@@ -129,9 +129,9 @@ export default class GraphScreen extends React.Component {
 
   render() {
     let pieChartData = [
-    { name: 'min Correct', population: Math.floor(this.state.correctCount/30)+1, color: '#7bd942', legendFontColor: '#7bd942', legendFontSize: 13 },
-    { name: 'min Wrong', population: Math.floor(this.state.wrongCount/30)+1, color: '#ea304c', legendFontColor: '#ea304c', legendFontSize: 13 },
-    { name: 'min Not sitted', population: Math.floor(this.state.noSitCount/30)+1, color: '#c7c7c7', legendFontColor: '#c7c7c7', legendFontSize: 13 },
+    { name: 'min (Correct)', population: Math.floor(this.state.correctCount/30)+1, color: '#7bd942', legendFontColor: '#7bd942', legendFontSize: 13 },
+    { name: 'min (Wrong)', population: Math.floor(this.state.wrongCount/30)+1, color: '#ea304c', legendFontColor: '#ea304c', legendFontSize: 13 },
+    { name: 'min (Not sitted)', population: Math.floor(this.state.noSitCount/30)+1, color: '#c7c7c7', legendFontColor: '#c7c7c7', legendFontSize: 13 },
   ]
 
 
@@ -161,22 +161,23 @@ export default class GraphScreen extends React.Component {
         }>
         <Content  contentContainerStyle={{flex:1, justifyContent: 'center', alignItems: 'center' , paddingBottom: 20, paddingLeft:5, paddingRight:5,
          }} resizeMode="contain" >
-          <Text style={{fontSize: 18,  color: "#6cc3c0", paddingBottom: 5}}> Today </Text>
-          <PureChart data={this.state.dailyData} type='line' xAxisGridLineColor={'#e7e7e7'} yAxisGridLineColor={'#e7e7e7'}/>
-          <Text style={{paddingBottom:5}}></Text>
+          <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop: 10, paddingBottom: 10}}> Today </Text>
+          <PureChart data={this.state.dailyData} type='line' height={150} xAxisGridLineColor={'#e7e7e7'} yAxisGridLineColor={'#e7e7e7'}/>
+          <Text style={{fontSize: 10,  color: "#858585", paddingBottom:5}}>Correct (2)    Wrong (1)    Not sitted (0)</Text>
           <PieChart
             data={pieChartData}
-            width={  Math.round(Dimensions.get('window').width)}
+            width={Math.round(Dimensions.get('window').width)}
             height={220}
             chartConfig={chartConfig}
             accessor="population"
             backgroundColor="transparent"
             paddingLeft="15"
+            paddingRight="15"
             absolute
           />
         <Text style={{paddingBottom:5, color: '#F0F0F0'}}>______________________________________</Text>
-          <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop:20, paddingBottom:5}}> Daily Postures (minutes) </Text>
-          <PureChart data={this.state.weekData} type='bar' numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}/>
+          <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop:20, paddingBottom:10}}> Daily Postures (minutes) </Text>
+          <PureChart data={this.state.weekData} type='bar' height={150} numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}/>
           <Text style={{fontSize: 10,  color: "#858585", paddingTop:8, paddingBottom:10}}> Legend:
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#7bd942"}}> Correct (2) </Text>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#ea304c"}}> Wrong (1) </Text>
