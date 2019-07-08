@@ -13,6 +13,7 @@ import socket
 import pandas as pd
 from flask import Flask, request, abort, jsonify, send_from_directory
 #from influxdb import InfluxDBClient
+from influxdb import InfluxDBClient
 
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
