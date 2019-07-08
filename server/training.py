@@ -4,11 +4,12 @@ import matplotlib as mt
 import numpy as np
 import sklearn as sk
 import joblib
+import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, auc, roc_curve
 from imblearn.over_sampling import RandomOverSampler
 from collections import Counter
 from imblearn.over_sampling import SMOTE, ADASYN
@@ -23,6 +24,9 @@ print(csvFile.shape)
 
 # print head of dataset
 print(csvFile.head())
+
+#Dataset Statistics
+print(csvFile.describe())
 
 # split data and posture identifier
 X = csvFile.drop(['peso', 'altezza', 'eta', 'sesso', 'postura', 'timestamp'], axis=1)
@@ -50,8 +54,7 @@ print('\n')
 print("=== Classification Report ===")
 print(classification_report(y_test, rfc_predict))
 print('\n')
-
-
+#
 # rfc_cv_score = cross_val_score(rfc, X, y, cv=10, scoring='roc_auc')
 # print("=== All AUC Scores ===")
 #
@@ -61,6 +64,9 @@ print('\n')
 # print("=== Mean AUC Scores ===")
 # print("Mean AUC Score - Random Forest: ", rfc_cv_score.mean())
 
+print("Accuracy:",sk.metrics.accuracy_score(y_test, rfc_predict))
+
+
 # Dumping trained Model
-joblib.dump(rfc, "trained_model.skl")
+joblib.dump(rfc, "trained_model1.skl")
 

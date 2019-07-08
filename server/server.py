@@ -3,12 +3,14 @@ import hashlib
 import json
 import os
 import sqlite3
+import threading
+import time
 import uuid
+
 import joblib
 import numpy
 import socket
 import pandas as pd
-import time
 from flask import Flask, request, abort, jsonify, send_from_directory
 from influxdb import InfluxDBClient
 
@@ -17,7 +19,7 @@ IPAddr = socket.gethostbyname(hostname)
 port = 8000
 
 UPLOAD_DIRECTORY = "./server/data/uploaded_files"
-DB_FILE = "../server/DB/SmartSeat.db"
+DB_FILE = "./server/DB/SmartSeat.db"
 
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
@@ -29,6 +31,13 @@ chair_on = False
 
 with open("./server/last_prediction.txt", "w") as fp1:
     fp1.write(str(last_prediction[0]) + "," + str(last_prediction[1]) + "," + str(chair_on))
+
+
+def check_up(ip_address):
+    response = os.system("ping -c 1 "+ip_address)
+    if response == 1:
+        with open("./server/last_prediction.txt", "w") as fp4:
+            fp4.write(str(-1) + "," + str(0) + "," + str(False))
 
 
 def save_prediction(pred_value, acc_value):
@@ -59,7 +68,16 @@ def get_values():
         arr_day = {}
         for value in points_all:
             if value['time'].split("T")[0] == str(today):
-                arr_day[(value['time'].split("T")[1]).split(".")[0]] = str(value['prediction'])
+                posture = str(value['prediction'])
+                if posture in ['2','3','4','5','6','7','8']:  # wrong
+                    posture = '1'
+                elif posture == '1':  # correct
+                    posture = '2'
+                elif posture == '0':  # nosit
+                    posture = '0'
+                arr_day[(value['time'].split("T")[1]).split(".")[0]] = posture
+        if arr_day.__len__() == 0:
+            arr_day["00:00:00"] = "0"
 
         # ALL MEASUREMENT by POSTURE TYPE
         check_date = str(datetime.date(1970, 1, 1))
@@ -68,41 +86,45 @@ def get_values():
         counter_no_sit = 0
         arr_counter = {}
         for value in points_all:
+            posture = value['prediction']
+            print(posture)
             if value['time'].split("T")[0] != check_date:
                 check_date = value['time'].split("T")[0]
                 arr_counter[check_date] = {}
                 counter_correct = 0
                 counter_wrong = 0
                 counter_no_sit = 0
-                if value['prediction'] == 0:
+                if posture == 0:
                     counter_no_sit = counter_no_sit + 1
                     arr_counter[check_date]['no_sit'] = counter_no_sit
-                elif value['prediction'] == 1:
+                elif posture == 1:
                     counter_correct = counter_correct + 1
                     arr_counter[check_date]['correct'] = counter_correct
-                elif value['prediction'] == 2:
+                elif posture in [2,3,4,5,6,7,8]:
                     counter_wrong = counter_wrong + 1
                     arr_counter[check_date]['wrong'] = counter_wrong
             else:
-                if value['prediction'] == 0:
+                if posture == 0:
                     counter_no_sit = counter_no_sit + 1
                     arr_counter[check_date]['no_sit'] = counter_no_sit
-                elif value['prediction'] == 1:
+                elif posture == 1:
                     counter_correct = counter_correct + 1
                     arr_counter[check_date]['correct'] = counter_correct
-                elif value['prediction'] == 2:
+                elif posture in [2,3,4,5,6,7,8]:
                     counter_wrong = counter_wrong + 1
                     arr_counter[check_date]['wrong'] = counter_wrong
-        arr_all = {'Correct': {}, 'Wrong': {}, 'Not Sitted': {}}
+        arr_all = {'Correct': {}, 'Wrong': {}, 'NotSitted': {}}
+
         for date, val in arr_counter.items():
             arr_all['Correct'][date] = val['correct']
             arr_all['Wrong'][date] = val['wrong']
-            arr_all['Not Sitted'][date] = val['no_sit']
+            arr_all['NotSitted'][date] = val['no_sit']
 
         # FINAL ARRAY for the response (JSON)
         arr_final = {'day_measurement': arr_day, 'all_measurement': arr_all}
         response = json.dumps(arr_final)
-    except :
+        print(arr_final)
+    except ConnectionError:
         with open("./server/data/json_graph.json", "r") as fp2:
             response = fp2.read()
     print(response)
@@ -141,30 +163,34 @@ def post_file(filename):
     return "", 201
 
 
-@api.route("/query_model", methods=["POST"])
-def query_model():
-    chair_on = True
-    # Load Trained Model
-    rfc = joblib.load('./server/trained_model.skl')
+@api.route("/query_model/<chairnumber>", methods=["POST"])
+def query_model(chairnumber):
     # CSV data to pandas array
+    chair_on = True
+    # t = threading.Timer(3, check_up, request.remote_addr)
+    # t.start()
     filename = str(uuid.uuid4())
     with open(os.path.join(UPLOAD_DIRECTORY, filename + ".csv"), "wb") as fp:
         fp.write(request.data)
     file_csv = "./server/data/uploaded_files/" + filename + ".csv"
-
     columnsName = ['seduta1', 'seduta2', 'seduta3', 'seduta4', 'schienale1', 'schienale2', 'schienale3']
-
     csv_file_predict = pd.read_csv(file_csv, names=columnsName)
     print(csv_file_predict.head(10))
     os.remove("./server/data/uploaded_files/" + filename + ".csv")
+    rfc = joblib.load("./server/trained_model.skl")
+    # Query RandomForest ML Model
     x_query = csv_file_predict
     try:
         rfc_predict = rfc.predict(x_query)
         print("Predict ", rfc_predict)
+
+        # Query SQLlite DB to bind username and data
+
+
+        # Counting and Saving prediction on InfluxDB
         unique, counts = numpy.unique(rfc_predict, return_counts=True)
         unique_counts = dict(zip(unique, counts))
         print(unique_counts)
-
         max_acc = 0
         max_val = 0
         for val, acc in unique_counts.items():
@@ -172,12 +198,15 @@ def query_model():
                 max_acc = acc
                 max_val = val
         last_prediction = [max_val, max_acc]
-        # saving prediction on InfluxDB
         save_prediction(max_val, max_acc)
+
+        # update last_prediction file
         with open("./server/last_prediction.txt", "w") as fp1:
             fp1.write(str(last_prediction[0]) + "," + str(last_prediction[1]) + "," + str(chair_on))
+
         print("Postura " + str(last_prediction[0]) + " al " + str(last_prediction[1] * 10) + "%")
         return '{"prediction":"Postura ' + str(last_prediction[0]) + ' al ' + str(last_prediction[1] * 10) + '%"}'
+
     except ValueError as err:
         print(err)
         return '{"prediction": "ERROR"}'
@@ -269,14 +298,13 @@ def login():
             '{' \
             ' "logged":"true",' \
             ' "username":"' + user_info[0] + '",' \
-                                             ' "name":"' + user_info[2] + '",' \
-                                                                          ' "surname":"' + user_info[3] + '",' \
-                                                                                                          ' "mail":"' + \
-            user_info[4] + '",' \
-                           ' "weight":"' + user_info[5] + '",' \
-                                                          ' "height":"' + user_info[6] + '",' \
-                                                                                         ' "sex":"' + user_info[7] + '"' \
-                                                                                                                     '}', 201
+            ' "name":"' + user_info[2] + '",' \
+            ' "surname":"' + user_info[3] + '",' \
+            ' "mail":"' + user_info[4] + '",' \
+            ' "weight":"' + user_info[5] + '",' \
+            ' "height":"' + user_info[6] + '",' \
+            ' "sex":"' + user_info[7] + '"' \
+            '}', 201
     else:
         print("Logged False")
         return '{"logged":"false"}', 201
@@ -334,18 +362,31 @@ def predict_value():
         prediction = p.split(",")
         if prediction[0] in ['2', '3', '4', '5', '6']:
             prediction[0] = '2'
+        elif prediction[0] == '1' and prediction[1] not in ['8','9','10']:
+            prediction[0] = '2'
+
         print(prediction)
         return '{' \
                '   "chairOn":"' + str(prediction[2]) + '",' \
-                                                       '   "prediction":"' + str(prediction[0]) + '",' \
-                                                                                                  '   "percentage":"' + str(
-            prediction[1]) + '0%"' \
-                             '}', 201
+               '   "prediction":"' + str(prediction[0]) + '",' \
+               '   "percentage":"' + str(prediction[1]) + '0%"' \
+               '}', 201
 
 
 @api.route("/get_graph_values")
 def get_graph_values():
     return get_values()
+
+
+@api.route("/bind/<username>:<bind>")
+def bind(username, bind):
+    query_update = "UPDATE BIND SET USERNAME = '" + username + "' WHERE CHAIRKEY = '" + bind + "'"
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+    cursor.execute(query_update)
+    cursor.close()
+    conn.commit()
+    conn.close()
 
 
 if __name__ == "__main__":
