@@ -3,6 +3,14 @@ import {View, TouchableOpacity, StyleSheet, Dimensions, ScrollView, RefreshContr
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon, Resizable} from 'native-base';
 import PureChart from 'react-native-pure-chart';
 import IpAddress from './auth/constant';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from 'react-native-chart-kit';
 
 export default class GraphScreen extends React.Component {
   constructor(props) {
@@ -79,17 +87,18 @@ export default class GraphScreen extends React.Component {
            } else if (y === 0) {
              noSit += 1;
            }
+           console.log(y+" "+correct+" "+wrong+" "+noSit);
         });
         Object.keys(responseData.all_measurement.Correct).forEach(function(key) {
-          objCorrect = {"x":key,"y": responseData.all_measurement.Correct[key]};
+          objCorrect = {"x":key,"y": Math.floor(responseData.all_measurement.Correct[key]/30)+1};
           arrCorr.push(objCorrect);
         });
         Object.keys(responseData.all_measurement.Wrong).forEach(function(key) {
-          objWrong = {"x":key,"y": responseData.all_measurement.Wrong[key]};
+          objWrong = {"x":key,"y": Math.floor(responseData.all_measurement.Wrong[key]/30)+1};
           arrWrong.push(objWrong);
         });
         Object.keys(responseData.all_measurement.NotSitted).forEach(function(key) {
-          objNotSitted = {"x":key,"y": responseData.all_measurement.NotSitted[key]};
+          objNotSitted = {"x":key,"y": Math.floor(responseData.all_measurement.NotSitted[key]/30)+1};
           arrNotSit.push(objNotSitted);
         });
         objDay = [{seriesName: 'day_measurement', data: arr, color: "#6cc3c0"}];
@@ -117,10 +126,18 @@ export default class GraphScreen extends React.Component {
     });
   }
 
+
   render() {
-  let pieChart = [
+    let pieChartData = [
+    { name: 'min Correct', population: Math.floor(this.state.correctCount/30)+1, color: '#7bd942', legendFontColor: '#7bd942', legendFontSize: 13 },
+    { name: 'min Wrong', population: Math.floor(this.state.wrongCount/30)+1, color: '#ea304c', legendFontColor: '#ea304c', legendFontSize: 13 },
+    { name: 'min Not sitted', population: Math.floor(this.state.noSitCount/30)+1, color: '#c7c7c7', legendFontColor: '#c7c7c7', legendFontSize: 13 },
+  ]
+
+
+  /*let pieChart = [
   {
-    value: this.state.correctCount,
+    value: parseInt(this.state.correctCount, 10),
     label: 'Correct',
     color: '#7bd942',
   }, {
@@ -132,8 +149,8 @@ export default class GraphScreen extends React.Component {
     label: 'No sitted',
     color: '#c7c7c7'
   }
+]*/
 
-]
   return (
     <Container contentContainerStyle={styles.Container}>
       <ScrollView style={{paddingTop:15, paddingBottom:10}} refreshControl={
@@ -147,10 +164,19 @@ export default class GraphScreen extends React.Component {
           <Text style={{fontSize: 18,  color: "#6cc3c0", paddingBottom: 5}}> Today </Text>
           <PureChart data={this.state.dailyData} type='line' xAxisGridLineColor={'#e7e7e7'} yAxisGridLineColor={'#e7e7e7'}/>
           <Text style={{paddingBottom:5}}></Text>
-          <PureChart data={pieChart} type='pie' />
-
-          <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop:20, paddingBottom:5}}> Daily Postures </Text>
-          <PureChart data={this.state.weekData} type='bar' numberOfXAxisGuideLine ={1} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}/>
+          <PieChart
+            data={pieChartData}
+            width={  Math.round(Dimensions.get('window').width)}
+            height={220}
+            chartConfig={chartConfig}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="15"
+            absolute
+          />
+        <Text style={{paddingBottom:5, color: '#F0F0F0'}}>______________________________________</Text>
+          <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop:20, paddingBottom:5}}> Daily Postures (minutes) </Text>
+          <PureChart data={this.state.weekData} type='bar' numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}/>
           <Text style={{fontSize: 10,  color: "#858585", paddingTop:8, paddingBottom:10}}> Legend:
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#7bd942"}}> Correct (2) </Text>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#ea304c"}}> Wrong (1) </Text>
@@ -162,6 +188,13 @@ export default class GraphScreen extends React.Component {
     </Container>
     );
   }
+}
+
+const chartConfig = {
+  backgroundGradientFrom: '#FFFFFF',
+  backgroundGradientTo: '#FFFFFF',
+  color: (opacity = 0) => `rgba(26, 255, 146, ${opacity})`,
+  strokeWidth: 2 // optional, default 3
 }
 
 const styles = StyleSheet.create({
