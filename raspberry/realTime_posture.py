@@ -21,7 +21,7 @@ port2 = '/dev/ttyACM1'
 serial_speed = 115200
 
 # Http
-API_URL = 'Http://192.168.43.136:8000'
+API_URL = 'Http://192.168.43.135:8000'
 
 # MQTT
 broker_address= "192.168.43.135"
@@ -30,7 +30,7 @@ topic = "seat/chair1"
 mqtt_username = "smartseat"
 mqtt_password = "mqttss"
 
-key1 = 'SmartSeatApp2019'
+key1 = "SmartSeatApp2019"
 key2 = '57t4U4$!@5J%BNBn'
 
 sendOK = ""
@@ -52,14 +52,17 @@ def MQTT_sendCSV(filePath):
     with open("dataset/{}".format(filePath)) as fp:
         content = fp.read()
 
+    while len(content)%16 !=0:
+        content = content+'@'
+
     try:
         cipher = AES.new(key2, AES.MODE_CBC,key1)
         encryptedFile = cipher.encrypt(content)
         client.loop_start()
         client.publish(topic, encryptedFile)
         client.loop_stop()
-    except:
-        print("Server not reachable")
+    except Exception as e :
+        print(e)
         pass
 
     sendOK = "OK"
