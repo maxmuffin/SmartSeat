@@ -117,7 +117,7 @@ try:
             for i in range(0,10):
 
                 saveRow = True
-                '''
+                
                 # read relevations from Arduino
                 ser1 = serial.Serial(port1, serial_speed)
                 ser2 = serial.Serial(port2, serial_speed)
@@ -139,8 +139,8 @@ try:
 
 
                 receivedData = decodedSeduta + "\t" + decodedSchienale
-                '''
-                receivedData = "1\t2\t3\t4\t5\t6\t7"
+
+                #receivedData = "1\t2\t3\t4\t5\t6\t7"
                 data = receivedData.split("\t")
 
                 equalizedData = []
