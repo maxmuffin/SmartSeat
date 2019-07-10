@@ -12,7 +12,6 @@ import numpy
 import socket
 import pandas as pd
 from flask import Flask, request, abort, jsonify, send_from_directory
-#from influxdb import InfluxDBClient
 from influxdb import InfluxDBClient
 
 hostname = socket.gethostname()
@@ -35,7 +34,7 @@ with open("./server/last_prediction.txt", "w") as fp1:
 
 
 def check_up(ip_address):
-    response = os.system("ping -c 1 "+ip_address)
+    response = os.system("ping -c 1 " + ip_address)
     if response == 1:
         with open("./server/last_prediction.txt", "w") as fp4:
             fp4.write(str(-1) + "," + str(0) + "," + str(False))
@@ -57,6 +56,28 @@ def save_prediction(pred_value, acc_value):
     clients.write_points(json_body)
 
 
+def save_sensor_data(seat1,seat2,seat3,seat4,back1,back2,back3,username):
+    clients = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
+    clients.create_database("SmartSeat")
+    json_body = [
+        {
+            "measurement": "Prediction",
+            "fields": {
+                "seat1":seat1,
+                "seat2":seat2,
+                "seat3":seat3,
+                "seat4":seat4,
+                "back1":back1,
+                "back2":back2,
+                "back3":back3,
+                "username":username
+            }
+        }
+    ]
+    # print("Saving to InfluxDB >> Prediction: " + str(pred_value) + ", Accuracy: " + str(acc_value))
+    clients.write_points(json_body)
+
+
 def get_values():
     try:
         client = InfluxDBClient('localhost', 8086, 'root', 'root', 'SmartSeat')
@@ -70,7 +91,7 @@ def get_values():
         for value in points_all:
             if value['time'].split("T")[0] == str(today):
                 posture = str(value['prediction'])
-                if posture in ['2','3','4','5','6','7','8']:  # wrong
+                if posture in ['2', '3', '4', '5', '6', '7', '8']:  # wrong
                     posture = '1'
                 elif posture == '1':  # correct
                     posture = '2'
@@ -91,7 +112,7 @@ def get_values():
             print(posture)
             if value['time'].split("T")[0] != check_date:
                 check_date = value['time'].split("T")[0]
-                arr_counter[check_date] = {}
+                arr_counter[check_date] = {'correct': 0, 'wrong': 0, 'no_sit': 0}
                 counter_correct = 0
                 counter_wrong = 0
                 counter_no_sit = 0
@@ -101,7 +122,7 @@ def get_values():
                 elif posture == 1:
                     counter_correct = counter_correct + 1
                     arr_counter[check_date]['correct'] = counter_correct
-                elif posture in [2,3,4,5,6,7,8]:
+                elif posture in [2, 3, 4, 5, 6, 7, 8]:
                     counter_wrong = counter_wrong + 1
                     arr_counter[check_date]['wrong'] = counter_wrong
             else:
@@ -111,11 +132,11 @@ def get_values():
                 elif posture == 1:
                     counter_correct = counter_correct + 1
                     arr_counter[check_date]['correct'] = counter_correct
-                elif posture in [2,3,4,5,6,7,8]:
+                elif posture in [2, 3, 4, 5, 6, 7, 8]:
                     counter_wrong = counter_wrong + 1
                     arr_counter[check_date]['wrong'] = counter_wrong
         arr_all = {'Correct': {}, 'Wrong': {}, 'NotSitted': {}}
-
+        print(arr_counter)
         for date, val in arr_counter.items():
             arr_all['Correct'][date] = val['correct']
             arr_all['Wrong'][date] = val['wrong']
@@ -299,13 +320,14 @@ def login():
             '{' \
             ' "logged":"true",' \
             ' "username":"' + user_info[0] + '",' \
-            ' "name":"' + user_info[2] + '",' \
-            ' "surname":"' + user_info[3] + '",' \
-            ' "mail":"' + user_info[4] + '",' \
-            ' "weight":"' + user_info[5] + '",' \
-            ' "height":"' + user_info[6] + '",' \
-            ' "sex":"' + user_info[7] + '"' \
-            '}', 201
+                                             ' "name":"' + user_info[2] + '",' \
+                                                                          ' "surname":"' + user_info[3] + '",' \
+                                                                                                          ' "mail":"' + \
+            user_info[4] + '",' \
+                           ' "weight":"' + user_info[5] + '",' \
+                                                          ' "height":"' + user_info[6] + '",' \
+                                                                                         ' "sex":"' + user_info[7] + '"' \
+                                                                                                                     '}', 201
     else:
         print("Logged False")
         return '{"logged":"false"}', 201
@@ -363,15 +385,16 @@ def predict_value():
         prediction = p.split(",")
         if prediction[0] in ['2', '3', '4', '5', '6']:
             prediction[0] = '2'
-        elif prediction[0] == '1' and prediction[1] not in ['8','9','10']:
+        elif prediction[0] == '1' and prediction[1] not in ['8', '9', '10']:
             prediction[0] = '2'
 
         print(prediction)
         return '{' \
                '   "chairOn":"' + str(prediction[2]) + '",' \
-               '   "prediction":"' + str(prediction[0]) + '",' \
-               '   "percentage":"' + str(prediction[1]) + '0%"' \
-               '}', 201
+                                                       '   "prediction":"' + str(prediction[0]) + '",' \
+                                                                                                  '   "percentage":"' + str(
+            prediction[1]) + '0%"' \
+                             '}', 201
 
 
 @api.route("/get_graph_values")
@@ -391,4 +414,4 @@ def bind(username, bind):
 
 
 if __name__ == "__main__":
-    api.run(debug=True, host=IPAddr, port=port, threaded=True)
+    api.run(debug=True, host=IPAddr, port=port, threaded=True)  # , ssl_context=('server/cert.pem', 'server/key.pem')
