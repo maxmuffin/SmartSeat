@@ -3,6 +3,7 @@ import {View, TouchableOpacity, StyleSheet, Dimensions, ScrollView, RefreshContr
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon, Resizable} from 'native-base';
 import PureChart from 'react-native-pure-chart';
 import IpAddress from './auth/constant';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   LineChart,
   BarChart,
@@ -47,7 +48,9 @@ export default class GraphScreen extends React.Component {
   }
 
   async getData(){
-     fetch(IpAddress+'/get_graph_values', {method: "GET"})
+    const user = await AsyncStorage.getItem('username');
+    console.log(user);
+     fetch(IpAddress+'/get_graph_values/'+user, {method: "GET"})
       .then(
         (response) => {
           if(response.ok == true && response.status >= 200 && response.status < 300) {
@@ -87,7 +90,6 @@ export default class GraphScreen extends React.Component {
            } else if (y === 0) {
              noSit += 1;
            }
-           console.log(y+" "+correct+" "+wrong+" "+noSit);
         });
         Object.keys(responseData.all_measurement.Correct).forEach(function(key) {
           objCorrect = {"x":key,"y": Math.floor(responseData.all_measurement.Correct[key]/30)+1};
@@ -118,7 +120,6 @@ export default class GraphScreen extends React.Component {
           color: "#c7c7c7"
         }];
         this.setState({dailyData:objDay, weekData:objWeek, correctCount:correct, wrongCount:wrong, noSitCount:noSit});
-        console.log(this.state);
         this.forceUpdate();
      })
     .catch((error) => {
@@ -177,7 +178,7 @@ export default class GraphScreen extends React.Component {
           />
         <Text style={{paddingBottom:5, color: '#F0F0F0'}}>______________________________________</Text>
           <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop:20, paddingBottom:10}}> Daily Postures (minutes) </Text>
-          <PureChart data={this.state.weekData} type='bar' height={150} numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}/>
+          <PureChart data={this.state.weekData} type='bar' height={150} numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}   width={Math.round(Dimensions.get('window').width)}/>
           <Text style={{fontSize: 10,  color: "#858585", paddingTop:8, paddingBottom:10}}> Legend:
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#7bd942"}}> Correct (2) </Text>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#ea304c"}}> Wrong (1) </Text>
