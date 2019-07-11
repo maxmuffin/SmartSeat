@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 import sqlite3
+import time
 import uuid
 
 import apscheduler
@@ -76,10 +77,10 @@ def save_sensor_data(seat1, seat2, seat3, seat4, back1, back2, back3, username):
             }
         }
     ]
-    print(
-        "Saving to InfluxDB >> Values: " + seat1 + "," + seat2 + "," + seat3 +
-        "," + seat4 + "," + back1 + "," + back2 + "," + back3 + ", " + username
-    )
+    # print(
+    #     "Saving to InfluxDB >> Values: " + seat1 + "," + seat2 + "," + seat3 +
+    #     "," + seat4 + "," + back1 + "," + back2 + "," + back3 + ", " + username
+    # )
     clients.write_points(json_body)
 
 
@@ -156,8 +157,16 @@ def get_values(username):
     return response, 201
 
 
+index_performance = 1
+string_performance = ""
+
+
 def query_model(data, chair):
     # CSV data to pandas array
+    global index_performance
+    print("INDICE: " + str(index_performance))
+    global string_performance
+    string_performance = string_performance + str(index_performance) + " - DataReceived: " + str(time.time())
     chair_on = True
     filename = str(uuid.uuid4())
     with open(os.path.join(UPLOAD_DIRECTORY, filename + ".csv"), "wt") as fp:
@@ -185,6 +194,7 @@ def query_model(data, chair):
 
         if username_exists:
             rfc_predict = rfc.predict(x_query)
+            string_performance = string_performance + " - DataProcessed: " + str(time.time())
             print("Predict ", rfc_predict)
             # Counting and Saving prediction on InfluxDB
             unique, counts = numpy.unique(rfc_predict, return_counts=True)
@@ -205,6 +215,8 @@ def query_model(data, chair):
                 if len(data) > 1:
                     save_sensor_data(data[0], data[1], data[2], data[3], data[4], data[5], data[6], username_exists)
 
+            string_performance = string_performance + " - DataSaved: " + str(time.time()) + "\n"
+            index_performance = index_performance + 1
             # update last_prediction file
             with open("./server/last_prediction.txt", "w") as fp1:
                 fp1.write(str(last_prediction[0]) + "," + str(last_prediction[1]) + "," + str(chair_on))
@@ -528,6 +540,17 @@ def unbind(username, chair):
     response = unbind_chair(username, chair)
     print("------------------------")
     return response, 201
+
+
+@api.route("/save_performance", methods=['GET'])
+def kill_server():
+    global index_performance
+    global string_performance
+    with open(os.path.join(UPLOAD_DIRECTORY, "performance1_005.txt"), "wt") as fp:
+        fp.write(string_performance)
+    index_performance = 1
+    string_performance = ""
+    return 'Saving performance data...'
 
 
 if __name__ == "__main__":
