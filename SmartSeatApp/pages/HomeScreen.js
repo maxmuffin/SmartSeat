@@ -161,7 +161,7 @@ export default class HomeScreen extends React.Component {
 
   render() {
 
-    if(this.state.appState==="inactive"){
+    if(this.state.appState==="background"){
       if (this.state.power != false) {
         this.unbindUser();
       }
