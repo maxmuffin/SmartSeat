@@ -30,6 +30,7 @@ topic = "seat/chair1"
 mqtt_username = "smartseat"
 mqtt_password = "mqttss"
 
+# Encryption
 key1 = "SmartSeatApp2019"
 key2 = '57t4U4$!@5J%BNBn'
 
@@ -40,6 +41,8 @@ altezza = 153
 eta = 25
 sesso = "M"
 
+timestamp_row = 0
+
 def on_message(client, userdata, message):
     print("message received " ,str(message.payload.decode("utf-8")))
     print("message topic=",message.topic)
@@ -48,6 +51,7 @@ def on_message(client, userdata, message):
 
 def MQTT_sendCSV(filePath):
     global sendOK
+    global timestamp_row
 
     with open("dataset/{}".format(filePath)) as fp:
         content = fp.read()
@@ -59,7 +63,10 @@ def MQTT_sendCSV(filePath):
         cipher = AES.new(key2, AES.MODE_CBC,key1)
         encryptedFile = cipher.encrypt(content)
         client.loop_start()
+        date = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        f.write(str(timestamp_row+1) +"\t"+date+"\n")
         client.publish(topic, encryptedFile)
+        timestamp_row += 1
         client.loop_stop()
     except Exception as e :
         print(e)
@@ -95,17 +102,20 @@ client.on_message=on_message #attach function to callback
 print("Connecting..")
 client.connect(broker_address)
 
-
 # For stabilize initial startup
 print("Waiting 10 seconds for stabilize sensors")
 time.sleep(2)
+unique_txt_filename = "performance/SendRelevations"+str(uuid.uuid4())+".txt"
+f= open(unique_txt_filename,"w+")
+
+# Online device
+requests.get('{}/rasp_online'.format(API_URL))
 
 try:
     while True:
 
         unique_filename = "realtimeView/"+str(uuid.uuid4())+"realtime_view.csv"
         sendOk = ""
-
 
         with open("dataset/{}".format(unique_filename), 'w', newline='') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -117,13 +127,32 @@ try:
             for i in range(0,10):
 
                 saveRow = True
-                
-                # read relevations from Arduino
-                ser1 = serial.Serial(port1, serial_speed)
-                ser2 = serial.Serial(port2, serial_speed)
 
-                inputSer1 = ser1.readline()
-                inputSer2 = ser2.readline()
+                while True:
+
+                    try:
+                        # read relevations from Arduino
+                        ser1 = serial.Serial(port1, serial_speed)
+                        ser2 = serial.Serial(port2, serial_speed)
+                        inputSer1 = ser1.readline()
+                        inputSer2 = ser2.readline()
+
+                        #•if ser1.readline() is not '' and ser2.readline() is not '' :
+                        #    break
+                        if len(inputSer1)>0 and len(inputSer2)>0:
+                            break
+
+                    except serial.serialutil.SerialException:
+                        print("Not reading from Serial")
+                        ser1.flushInput()
+                        ser1.flushOutput()
+                        ser2.flushInput()
+                        ser2.flushOutput()
+                        client.disconnect()
+                        f.close()
+                        print("Client disconnect")
+                        time.sleep(1)
+                        exit()
 
                 decodedSer1 = inputSer1.decode("utf-8")
                 decodedSer2 = inputSer2.decode("utf-8")
@@ -131,11 +160,11 @@ try:
                 if decodedSer1.count('\t') == 3:
                     decodedSeduta = decodedSer1
                     decodedSchienale = decodedSer2
-                    print("Seduta: "+ port1 +"\nSchienale: "+port2)
+                    #print("Seduta: "+ port1 +"\nSchienale: "+port2)
                 else:
                     decodedSeduta = decodedSer2
                     decodedSchienale = decodedSer1
-                    print("Seduta: "+ port2 +"\nSchienale: "+port1)
+                    #print("Seduta: "+ port2 +"\nSchienale: "+port1)
 
 
                 receivedData = decodedSeduta + "\t" + decodedSchienale
@@ -184,6 +213,7 @@ try:
             os.remove("dataset/{}".format(delete_filename))
 
 except KeyboardInterrupt:
+    client.disconnect()
+    f.close()
     print("Client disconnect")
     time.sleep(1)
-    client.disconnect()
