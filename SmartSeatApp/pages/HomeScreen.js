@@ -80,11 +80,11 @@ export default class HomeScreen extends React.Component {
               this.getPosture();
               this.timer = setInterval(()=> this.getPosture(), 3000);
             }else{
-              this.alertError("WARNING ! ","Seat already binded. Try Later !");
+              this.alertError("WARNING","Seat already binded");
             }
          })
         .catch((error) => {
-          console.log(error);
+          this.alertError("ERROR","Server can't be reached!");
         });
       }else{
           fetch(IpAddress+'/unbind/'+ user +"/1", {method: "GET"}).then(
@@ -103,13 +103,13 @@ export default class HomeScreen extends React.Component {
               this.setState({ power : !this.state.power });
               this.setState({ powerColor : "#94e03b" });
               clearInterval(this.timer);
-              this.alertError("CONFIRM","Seat unbinded");
+              this.alertError("UNBINDED");
               this.state.imageId = 3;
               this.forceUpdate();
             }
          })
         .catch((error) => {
-          console.log(error);
+            this.alertError("ERROR","Server can't be reached!");
         });
     }
   }
@@ -162,7 +162,7 @@ export default class HomeScreen extends React.Component {
               resizeMode="contain"
               source={this.state.imageSource[this.state.imageId].image}
             />
-          <Icon size={55} title="Power" style={{
+          <Icon size={85} title="Power" style={{
             color: this.state.powerColor,
             padding:5,
             marginBottom:10,

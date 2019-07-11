@@ -188,7 +188,7 @@ export default class GraphScreen extends React.Component {
           />
         <Text style={{paddingBottom:5, color: '#F0F0F0'}}>______________________________________</Text>
           <Text style={{fontSize: 18,  color: "#6cc3c0", paddingTop:20, paddingBottom:10}}> Daily Postures (minutes) </Text>
-          <PureChart data={this.state.weekData} type='bar' height={150} numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'}   width={Math.round(Dimensions.get('window').width)}/>
+          <PureChart data={this.state.weekData} type='bar' height={150} numberOfXAxisGuideLine ={2} xAxisGridLineColor={'#e7e7e7'}   yAxisGridLineColor={'#e7e7e7'} />
           <Text style={{fontSize: 10,  color: "#858585", paddingTop:8, paddingBottom:10}}> Legend:
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#7bd942"}}> Correct (2) </Text>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: "#ea304c"}}> Wrong (1) </Text>
