@@ -1,15 +1,15 @@
 import requests
 
-API_URL = 'Http://192.168.43.136:8000'
+API_URL = 'Http://192.168.43.135:8000'
 
 response = requests.get('{}/files'.format(API_URL))
 print(response.json())
 
 
-with open('data/inputdata.csv') as fp:
-    content = fp.read()
-response = requests.post('{}/query_model'.format(API_URL), data=content)
-print(response.json())
+# with open('data/inputdata.csv') as fp:
+#     content = fp.read()
+# response = requests.post('{}/query_model'.format(API_URL), data=content)
+# print(response.json())
 
 
 json_data = \
@@ -18,7 +18,7 @@ json_data = \
     ' "password":"prova",' \
     ' "name":"matteo",' \
     ' "surname":"sanfelici",' \
-    ' "email":"sanfelicimatteo@gmail.com",' \
+    ' "mail":"sanfelicimatteo@gmail.com",' \
     ' "weight":"70",' \
     ' "height":"170",' \
     ' "sex":"M"' \
