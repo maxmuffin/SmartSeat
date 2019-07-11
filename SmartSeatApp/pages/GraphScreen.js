@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, StyleSheet, Dimensions, ScrollView, RefreshControl} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Dimensions, ScrollView, RefreshControl, Alert} from 'react-native';
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Icon, Resizable} from 'native-base';
 import PureChart from 'react-native-pure-chart';
 import IpAddress from './auth/constant';
@@ -47,6 +47,16 @@ export default class GraphScreen extends React.Component {
   await this.getData();
   }
 
+  alertError =(Title,text)=>{
+    Alert.alert(
+         Title,
+         text,
+         [
+           {text: 'cancel'}
+         ]
+       );
+  }
+
   async getData(){
     const user = await AsyncStorage.getItem('username');
     console.log(user);
@@ -56,7 +66,7 @@ export default class GraphScreen extends React.Component {
           if(response.ok == true && response.status >= 200 && response.status < 300) {
             return response.json();
           } else {
-            console.log("Server can't be reached!");
+            this.alertError("ERROR","Server can't be reached!");
             this.state.imageId = 1;
           }
         },
