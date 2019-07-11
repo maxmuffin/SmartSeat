@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet , Image, ImageBackground, Dimensions, Alert} from 'react-native';
+import { View, TouchableOpacity, StyleSheet , Image, ImageBackground, Dimensions, Alert, AppState} from 'react-native';
 import { Container, Header, Content, Item, Input, Text, Button, Body, Title, Left, Right, Colors, Thumbnail } from 'native-base';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HeaderButtons, { HeaderButton} from 'react-navigation-header-buttons';
@@ -11,6 +11,8 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
       super(props);
       this.state = {
+        username: AsyncStorage.getItem('username'),
+        appState: AppState.currentState,
         timer: '',
         imageId: 3,
         power: false,
@@ -40,14 +42,22 @@ export default class HomeScreen extends React.Component {
     };
 
     componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
 
-    this.mounted = true;
     //this.timer = setInterval(()=> this.getPosture(), 3000);
     }
 
     componentWillUnmount() {
-      clearInterval(this.timer);
+      AppState.removeEventListener('change', this._handleAppStateChange);
+
     }
+
+    _handleAppStateChange = (nextAppState) => {
+    if (this.state.appState.match(/background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!')
+    }
+    this.setState({appState: nextAppState});
+  }
 
     alertError =(Title,text)=>{
       Alert.alert(
@@ -58,7 +68,33 @@ export default class HomeScreen extends React.Component {
            ]
          );
     }
-
+    async unbindUser(){
+      const user = await AsyncStorage.getItem('username');
+      fetch(IpAddress+'/unbind/'+ user +"/1", {method: "GET"}).then(
+        (response) => {
+          if(response.ok == true && response.status >= 200 && response.status < 300) {
+            return response.json();
+          } else {
+            this.alertError("ERROR","Server can't be reached!");
+          }
+        },
+      )
+      .then((responseData) =>
+      {
+        console.log(responseData);
+        if (responseData.unbind === "True") {
+          this.setState({ power : !this.state.power });
+          this.setState({ powerColor : "#94e03b" });
+          clearInterval(this.timer);
+          this.alertError("UNBINDED");
+          this.state.imageId = 3;
+          this.forceUpdate();
+        }
+     })
+    .catch((error) => {
+        this.alertError("ERROR","Server can't be reached!");
+    });
+    }
     async bindUser(){
       const user = await AsyncStorage.getItem('username');
       if (this.state.power != true) {
@@ -87,30 +123,7 @@ export default class HomeScreen extends React.Component {
           this.alertError("ERROR","Server can't be reached!");
         });
       }else{
-          fetch(IpAddress+'/unbind/'+ user +"/1", {method: "GET"}).then(
-            (response) => {
-              if(response.ok == true && response.status >= 200 && response.status < 300) {
-                return response.json();
-              } else {
-                this.alertError("ERROR","Server can't be reached!");
-              }
-            },
-          )
-          .then((responseData) =>
-          {
-            console.log(responseData);
-            if (responseData.unbind === "True") {
-              this.setState({ power : !this.state.power });
-              this.setState({ powerColor : "#94e03b" });
-              clearInterval(this.timer);
-              this.alertError("UNBINDED");
-              this.state.imageId = 3;
-              this.forceUpdate();
-            }
-         })
-        .catch((error) => {
-            this.alertError("ERROR","Server can't be reached!");
-        });
+          this.unbindUser();
     }
   }
 
@@ -147,6 +160,12 @@ export default class HomeScreen extends React.Component {
   };
 
   render() {
+
+    if(this.state.appState==="inactive"){
+      if (this.state.power != false) {
+        this.unbindUser();
+      }
+    }
     const { width, height } = Dimensions.get('window');
 
     return (
