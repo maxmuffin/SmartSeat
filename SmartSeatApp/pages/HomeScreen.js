@@ -166,7 +166,7 @@ export default class HomeScreen extends React.Component {
         this.unbindUser();
       }
     }
-    const { width, height } = Dimensions.get('window');
+    const { width, height } = Math.round(Dimensions.get('window'));
 
     return (
       <Container style={styles.container}>
