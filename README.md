@@ -15,7 +15,7 @@ The script used for in training phase is **training.py**, which before instructi
 
 It use InfluXDB for save prediction obtained from RandomForest and user data.
 
-#### Launch InfluXDB
+#### Launch InfluxDB
 ```console
  sudo influxd
 ```
