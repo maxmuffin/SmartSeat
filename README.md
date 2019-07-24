@@ -10,8 +10,8 @@ It aims to receive data sent by the raspberry through the MQTT protocol, decrypt
 In it there is an MQTT broker (mosquitto) which has the task of receiving the data and passing it to the server to be processed.
 The purpose of the server is also to provide useful APIs for app requests and display user statistics.
 
-Contains final dataset for Training RandomForest Algoritm.
-The script used for in training phase is **training.py**
+Contains final dataset for Training **RandomForest Algoritm**.
+The script used for in training phase is **training.py**, which before instructing the model generates synthetic data starting from the initial dataset using the SMOTE oversampling technique.
 
 It use InfluXDB for save prediction obtained from RandomForest and user data.
 
