@@ -18,9 +18,10 @@ Inoltre è presente un ulteriore grafico a linee in cui viene visualizzata una s
 
 #### Screen app
 <div style="text-align:center">
-  <img src="SmartSeatApp/images/ScreenApp1.png" width="350">
-  <img src="SmartSeatApp/images/ScreenApp2.png" width="350" >
+  <img src="SmartSeatApp/images/screenApp1.png" width="700">
+  <img src="SmartSeatApp/images/screenApp2.png" width="700">
 </div>
+
 
 #### Run on Android
 
