@@ -1,8 +1,8 @@
 import serial
 import csv
 
-#serDevSeduta = serial.Serial('/dev/ttyACM0', 9600)
-#serDevSchienale = serial.Serial('/dev/ttyACM1', 9600)
+serDevSeduta = serial.Serial('/dev/ttyACM0', 9600)
+serDevSchienale = serial.Serial('/dev/ttyACM1', 9600)
 
 print("Inserisci peso:")
 peso = float(input())
@@ -12,15 +12,14 @@ postura = int(input())
 
 print("Peso: " + str(peso) + " Postura: " + str(postura))
 
-
 # read from Arduino
 
-#inputSeduta = serDevSeduta.read()
-#inputSchienale = serDevSchienale.read()
+inputSeduta = serDevSeduta.read()
+inputSchienale = serDevSchienale.read()
 
-#receivedData = inputSeduta + "#" + inputSchienale
+receivedData = inputSeduta + "#" + inputSchienale
 
-receivedData = "1#2#3#4#5#6#7"
+#receivedData = "1#2#3#4#5#6#7"
 data = receivedData.split("#")
 
 equalizedData = []

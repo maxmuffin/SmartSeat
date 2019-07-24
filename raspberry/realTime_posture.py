@@ -41,7 +41,7 @@ altezza = 153
 eta = 25
 sesso = "M"
 
-timestamp_row = 0
+#timestamp_row = 0
 
 def on_message(client, userdata, message):
     print("message received " ,str(message.payload.decode("utf-8")))
@@ -51,7 +51,7 @@ def on_message(client, userdata, message):
 
 def MQTT_sendCSV(filePath):
     global sendOK
-    global timestamp_row
+    #global timestamp_row
 
     with open("dataset/{}".format(filePath)) as fp:
         content = fp.read()
@@ -63,10 +63,10 @@ def MQTT_sendCSV(filePath):
         cipher = AES.new(key2, AES.MODE_CBC,key1)
         encryptedFile = cipher.encrypt(content)
         client.loop_start()
-        date = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
-        f.write(str(timestamp_row+1) +"\t"+date+"\n")
+        #date = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        #f.write(str(timestamp_row+1) +"\t"+date+"\n")
         client.publish(topic, encryptedFile)
-        timestamp_row += 1
+        #timestamp_row += 1
         client.loop_stop()
     except Exception as e :
         print(e)
@@ -105,8 +105,10 @@ client.connect(broker_address)
 # For stabilize initial startup
 print("Waiting 10 seconds for stabilize sensors")
 time.sleep(2)
-unique_txt_filename = "performance/SendRelevations"+str(uuid.uuid4())+".txt"
-f= open(unique_txt_filename,"w+")
+
+# For test performance of system
+#unique_txt_filename = "performance/SendRelevations"+str(uuid.uuid4())+".txt"
+#f= open(unique_txt_filename,"w+")
 
 # Online device
 requests.get('{}/rasp_online'.format(API_URL))
@@ -214,6 +216,6 @@ try:
 
 except KeyboardInterrupt:
     client.disconnect()
-    f.close()
+    #f.close()
     print("Client disconnect")
     time.sleep(1)
