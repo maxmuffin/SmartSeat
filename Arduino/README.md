@@ -1,7 +1,7 @@
 # SmartSeatArduino
 Arduino & Raspberry code for SmartSeat @unibo
 <div style="text-align:center">
-  <img src="/raspberry/image/ic_launcher.png" width="120">
+  <img src="/Arduino/raspberry/image/ic_launcher.png" width="120">
 </div>
 
 ## Section microController
@@ -12,11 +12,11 @@ This folder contain:
 #### Fritzing schema
 - Schienale
   <div style="text-align:center">
-    <img src="/microController/schema/schienale.png" width="550">
+    <img src="/Arduino/microController/schema/schienale.png" width="550">
   </div>
 - Seduta
 <div style="text-align:center">
-  <img src="/microController/schema/seduta.png" width="550">
+  <img src="/Arduino/microController/schema/seduta.png" width="550">
 </div>
 
 Tested on Fishino Piranha boards
