@@ -1,7 +1,7 @@
 # SmartSeatAI
 
 <div style="text-align:center">
-  <img src="image/ic_launcher.png" width="120">
+  <img src="/IA/image/ic_launcher.png" width="120">
 </div>
 
 SmartSeat server side that contains:
